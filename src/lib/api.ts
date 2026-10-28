@@ -1,11 +1,19 @@
+import { site } from '@/config/site';
+
 // Set at build time: .env for local dev, the GitHub repo variable
-// VITE_API_URL for the deployed site (the workflow refuses to build without
-// it). The localhost fallback only applies to `npm run dev`.
+// VITE_API_URL for the deployed site. The localhost fallback only applies to
+// `npm run dev`; a production build without it deploys with the forms off.
 const API_URL = (
   import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:8000' : '')
 ).replace(/\/$/, '');
 
 async function post<T>(path: string, body: unknown): Promise<T> {
+  if (!API_URL) {
+    throw new Error(
+      `Online requests are not available yet. Please call us at ${site.phone} or email ${site.email}.`
+    );
+  }
+
   let res: Response;
   try {
     res = await fetch(`${API_URL}${path}`, {

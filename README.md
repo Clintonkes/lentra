@@ -49,7 +49,7 @@ The free Render plan sleeps when idle, so the first form submission after a quie
 
 1. Repo → Settings → Pages → Source: **GitHub Actions**.
 2. Repo → Settings → Secrets and variables → Actions → **Variables**: set `VITE_API_URL` to the
-   Render URL (e.g. `https://petraslynn-backend.onrender.com`). The workflow refuses to build without it.
+   Render URL (e.g. `https://petraslynn-backend.onrender.com`). Without it the site still deploys, but the forms ask visitors to call or email instead.
 3. Push to `main`, or Actions → "Deploy Frontend to GitHub Pages" → Run workflow.
 
 The site is then live at `https://<github-user>.github.io/<repo>/`. The build reads GitHub's Pages
