@@ -11,7 +11,7 @@ export default function Layout() {
   }, [pathname]);
 
   return (
-    <div className="min-h-screen bg-navy-50 flex flex-col">
+    <div className="min-h-screen bg-pine-50 flex flex-col">
       <Navbar />
       <main className="flex-1">
         <Outlet />

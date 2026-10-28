@@ -16,12 +16,12 @@ const serviceOptions = [
   "Full maintenance plan",
   "Not sure yet",
 ];
-const frequencyOptions = ["One-time", "Weekly", "Bi-weekly", "Monthly", "Not sure yet"];
+const frequencyOptions = ["Single visit", "Weekly", "Every other week", "Monthly", "Not sure yet"];
 const sizeOptions = [
   "Under 1/4 acre",
-  "1/4 - 1/2 acre",
-  "1/2 - 1 acre",
-  "1 - 2 acres",
+  "1/4 to 1/2 acre",
+  "1/2 to 1 acre",
+  "1 to 2 acres",
   "2+ acres",
   "Commercial property",
 ];
@@ -100,31 +100,31 @@ export default function Quote() {
 
   if (status === "success") {
     return (
-      <div className="min-h-screen bg-navy-50 flex items-center justify-center px-4 pt-28 pb-16">
+      <div className="min-h-screen bg-pine-50 flex items-center justify-center px-4 pt-28 pb-16">
         <div className="max-w-lg w-full bg-white rounded-2xl shadow-xl p-10 text-center">
-          <div className="w-20 h-20 rounded-full bg-copper-100 flex items-center justify-center mx-auto mb-6">
-            <CheckCircle2 className="w-12 h-12 text-copper-600" />
+          <div className="w-20 h-20 rounded-full bg-gold-100 flex items-center justify-center mx-auto mb-6">
+            <CheckCircle2 className="w-12 h-12 text-gold-600" />
           </div>
-          <h2 className="text-2xl font-extrabold text-navy-900 mb-3">
+          <h2 className="text-2xl font-semibold text-pine-900 mb-3">
             Quote Request Received!
           </h2>
-          <p className="text-navy-600 mb-8 leading-relaxed">
+          <p className="text-pine-600 mb-8 leading-relaxed">
             Thank you for reaching out to Petraslynn LLC. Our team will review
             your request and contact you within 24 hours to schedule your free
             property assessment.
           </p>
           {reference && (
-            <p className="text-sm text-navy-500 mb-8">
+            <p className="text-sm text-pine-500 mb-8">
               Your reference number is{" "}
-              <span className="font-mono font-semibold text-navy-900">{reference}</span>.
+              <span className="font-mono font-semibold text-pine-900">{reference}</span>.
               A confirmation has been sent to your email.
             </p>
           )}
-          <div className="bg-navy-50 rounded-xl p-5 mb-8 text-left">
-            <p className="text-sm text-navy-500 mb-2">Need to talk to us now?</p>
+          <div className="bg-pine-50 rounded-xl p-5 mb-8 text-left">
+            <p className="text-sm text-pine-500 mb-2">Need to talk to us now?</p>
             <a
               href={`tel:${site.phoneRaw}`}
-              className="flex items-center gap-2 text-copper-600 font-semibold"
+              className="flex items-center gap-2 text-gold-600 font-semibold"
             >
               <Phone className="w-5 h-5" /> {site.phone}
             </a>
@@ -145,7 +145,7 @@ export default function Quote() {
                 message: "",
               });
             }}
-            className="bg-navy-900 hover:bg-navy-800 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-200"
+            className="bg-pine-900 hover:bg-pine-800 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-200"
           >
             Submit Another Request
           </button>
@@ -164,12 +164,12 @@ export default function Quote() {
     <div>
       <PageHeader
         title="Get a Free Quote"
-        subtitle="Answer a few questions and we'll provide a customized quote — no obligation."
+        subtitle="Answer a few questions and we'll prepare a tailored quote. No obligation."
         breadcrumb="Quote"
         image={heroImage}
       />
 
-      <section className="py-20 bg-navy-50">
+      <section className="py-20 bg-pine-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Horizontal progress bar */}
           <div className="flex items-center justify-between mb-10 max-w-2xl mx-auto">
@@ -179,8 +179,8 @@ export default function Quote() {
                   <div
                     className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold transition-all duration-300 ${
                       step >= s.num
-                        ? "copper-gradient text-white shadow-lg shadow-copper-500/20"
-                        : "bg-white text-navy-300 border border-navy-200"
+                        ? "gold-gradient text-white shadow-lg shadow-gold-500/20"
+                        : "bg-white text-pine-300 border border-pine-200"
                     }`}
                   >
                     {step > s.num ? (
@@ -191,7 +191,7 @@ export default function Quote() {
                   </div>
                   <span
                     className={`text-xs mt-2 font-medium ${
-                      step >= s.num ? "text-copper-600" : "text-navy-400"
+                      step >= s.num ? "text-gold-600" : "text-pine-400"
                     }`}
                   >
                     {s.label}
@@ -200,7 +200,7 @@ export default function Quote() {
                 {i < steps.length - 1 && (
                   <div
                     className={`flex-1 h-0.5 mx-3 rounded-full transition-all duration-300 ${
-                      step > s.num ? "copper-gradient" : "bg-navy-200"
+                      step > s.num ? "gold-gradient" : "bg-pine-200"
                     }`}
                   />
                 )}
@@ -210,7 +210,7 @@ export default function Quote() {
 
           <form
             onSubmit={handleSubmit}
-            className="bg-white rounded-2xl shadow-lg border border-navy-100 p-8 md:p-10"
+            className="bg-white rounded-2xl shadow-lg border border-pine-100 p-8 md:p-10"
           >
             {status === "error" && (
               <div className="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
@@ -228,15 +228,15 @@ export default function Quote() {
             {step === 1 && (
               <div className="space-y-5 animate-fade-in">
                 <div>
-                  <h2 className="text-2xl font-extrabold text-navy-900 mb-1">
+                  <h2 className="text-2xl font-semibold text-pine-900 mb-1">
                     Let&apos;s start with you
                   </h2>
-                  <p className="text-navy-500 text-sm mb-6">
+                  <p className="text-pine-500 text-sm mb-6">
                     We need your contact info to follow up with your quote.
                   </p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-navy-700 mb-1.5">
+                  <label className="block text-sm font-medium text-pine-700 mb-1.5">
                     Full Name <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -244,13 +244,13 @@ export default function Quote() {
                     required
                     value={data.name}
                     onChange={(e) => update("name", e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg border border-navy-200 focus:border-copper-500 focus:ring-2 focus:ring-copper-500/20 outline-none transition-all text-sm"
+                    className="w-full px-4 py-3 rounded-lg border border-pine-200 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 outline-none transition-all text-sm"
                     placeholder="John Smith"
                   />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-sm font-medium text-navy-700 mb-1.5">
+                    <label className="block text-sm font-medium text-pine-700 mb-1.5">
                       Email <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -258,12 +258,12 @@ export default function Quote() {
                       required
                       value={data.email}
                       onChange={(e) => update("email", e.target.value)}
-                      className="w-full px-4 py-3 rounded-lg border border-navy-200 focus:border-copper-500 focus:ring-2 focus:ring-copper-500/20 outline-none transition-all text-sm"
+                      className="w-full px-4 py-3 rounded-lg border border-pine-200 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 outline-none transition-all text-sm"
                       placeholder="john@example.com"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-navy-700 mb-1.5">
+                    <label className="block text-sm font-medium text-pine-700 mb-1.5">
                       Phone <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -271,13 +271,13 @@ export default function Quote() {
                       required
                       value={data.phone}
                       onChange={(e) => update("phone", e.target.value)}
-                      className="w-full px-4 py-3 rounded-lg border border-navy-200 focus:border-copper-500 focus:ring-2 focus:ring-copper-500/20 outline-none transition-all text-sm"
-                      placeholder="(303) 555-0100"
+                      className="w-full px-4 py-3 rounded-lg border border-pine-200 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 outline-none transition-all text-sm"
+                      placeholder="(303) 555 0100"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-navy-700 mb-1.5">
+                  <label className="block text-sm font-medium text-pine-700 mb-1.5">
                     Property Address <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -285,7 +285,7 @@ export default function Quote() {
                     required
                     value={data.address}
                     onChange={(e) => update("address", e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg border border-navy-200 focus:border-copper-500 focus:ring-2 focus:ring-copper-500/20 outline-none transition-all text-sm"
+                    className="w-full px-4 py-3 rounded-lg border border-pine-200 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 outline-none transition-all text-sm"
                     placeholder="748 Victor Street, Aurora, CO 80011"
                   />
                 </div>
@@ -296,22 +296,22 @@ export default function Quote() {
             {step === 2 && (
               <div className="space-y-5 animate-fade-in">
                 <div>
-                  <h2 className="text-2xl font-extrabold text-navy-900 mb-1">
+                  <h2 className="text-2xl font-semibold text-pine-900 mb-1">
                     Tell us about your needs
                   </h2>
-                  <p className="text-navy-500 text-sm mb-6">
+                  <p className="text-pine-500 text-sm mb-6">
                     What kind of service are you looking for?
                   </p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-navy-700 mb-1.5">
+                  <label className="block text-sm font-medium text-pine-700 mb-1.5">
                     Service Needed <span className="text-red-500">*</span>
                   </label>
                   <select
                     required
                     value={data.service_type}
                     onChange={(e) => update("service_type", e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg border border-navy-200 focus:border-copper-500 focus:ring-2 focus:ring-copper-500/20 outline-none transition-all text-sm bg-white"
+                    className="w-full px-4 py-3 rounded-lg border border-pine-200 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 outline-none transition-all text-sm bg-white"
                   >
                     <option value="">Select a service</option>
                     {serviceOptions.map((s) => (
@@ -323,13 +323,13 @@ export default function Quote() {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-sm font-medium text-navy-700 mb-1.5">
+                    <label className="block text-sm font-medium text-pine-700 mb-1.5">
                       Property Size
                     </label>
                     <select
                       value={data.property_size}
                       onChange={(e) => update("property_size", e.target.value)}
-                      className="w-full px-4 py-3 rounded-lg border border-navy-200 focus:border-copper-500 focus:ring-2 focus:ring-copper-500/20 outline-none transition-all text-sm bg-white"
+                      className="w-full px-4 py-3 rounded-lg border border-pine-200 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 outline-none transition-all text-sm bg-white"
                     >
                       <option value="">Select size</option>
                       {sizeOptions.map((s) => (
@@ -340,13 +340,13 @@ export default function Quote() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-navy-700 mb-1.5">
+                    <label className="block text-sm font-medium text-pine-700 mb-1.5">
                       Frequency
                     </label>
                     <select
                       value={data.frequency}
                       onChange={(e) => update("frequency", e.target.value)}
-                      className="w-full px-4 py-3 rounded-lg border border-navy-200 focus:border-copper-500 focus:ring-2 focus:ring-copper-500/20 outline-none transition-all text-sm bg-white"
+                      className="w-full px-4 py-3 rounded-lg border border-pine-200 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 outline-none transition-all text-sm bg-white"
                     >
                       <option value="">Select frequency</option>
                       {frequencyOptions.map((f) => (
@@ -358,7 +358,7 @@ export default function Quote() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-navy-700 mb-1.5">
+                  <label className="block text-sm font-medium text-pine-700 mb-1.5">
                     Preferred Start Date
                   </label>
                   <input
@@ -366,18 +366,18 @@ export default function Quote() {
                     min={new Date().toISOString().split("T")[0]}
                     value={data.preferred_date}
                     onChange={(e) => update("preferred_date", e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg border border-navy-200 focus:border-copper-500 focus:ring-2 focus:ring-copper-500/20 outline-none transition-all text-sm"
+                    className="w-full px-4 py-3 rounded-lg border border-pine-200 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 outline-none transition-all text-sm"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-navy-700 mb-1.5">
+                  <label className="block text-sm font-medium text-pine-700 mb-1.5">
                     Additional Details
                   </label>
                   <textarea
                     rows={3}
                     value={data.message}
                     onChange={(e) => update("message", e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg border border-navy-200 focus:border-copper-500 focus:ring-2 focus:ring-copper-500/20 outline-none transition-all text-sm resize-none"
+                    className="w-full px-4 py-3 rounded-lg border border-pine-200 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 outline-none transition-all text-sm resize-none"
                     placeholder="Any specific concerns, problem areas, or goals for your property..."
                   />
                 </div>
@@ -388,14 +388,14 @@ export default function Quote() {
             {step === 3 && (
               <div className="animate-fade-in">
                 <div>
-                  <h2 className="text-2xl font-extrabold text-navy-900 mb-1">
+                  <h2 className="text-2xl font-semibold text-pine-900 mb-1">
                     Review your request
                   </h2>
-                  <p className="text-navy-500 text-sm mb-6">
+                  <p className="text-pine-500 text-sm mb-6">
                     Please confirm your details before submitting.
                   </p>
                 </div>
-                <div className="bg-navy-50 rounded-xl p-6 space-y-4">
+                <div className="bg-pine-50 rounded-xl p-6 space-y-4">
                   {[
                     { icon: User, label: "Name", value: data.name },
                     { icon: Mail, label: "Email", value: data.email },
@@ -413,12 +413,12 @@ export default function Quote() {
                         key={item.label}
                         className="flex items-start gap-3"
                       >
-                        <item.icon className="w-5 h-5 text-copper-500 flex-shrink-0 mt-0.5" />
+                        <item.icon className="w-5 h-5 text-gold-500 flex-shrink-0 mt-0.5" />
                         <div>
-                          <p className="text-xs text-navy-400 uppercase tracking-wide">
+                          <p className="text-xs text-pine-400 uppercase tracking-wide">
                             {item.label}
                           </p>
-                          <p className="text-navy-800 font-medium text-sm">
+                          <p className="text-pine-800 font-medium text-sm">
                             {item.value}
                           </p>
                         </div>
@@ -434,7 +434,7 @@ export default function Quote() {
                 <button
                   type="button"
                   onClick={() => setStep(step - 1)}
-                  className="flex items-center gap-2 text-navy-600 hover:text-navy-900 font-medium text-sm transition-colors"
+                  className="flex items-center gap-2 text-pine-600 hover:text-pine-900 font-medium text-sm transition-colors"
                 >
                   <ArrowLeft className="w-4 h-4" /> Back
                 </button>
@@ -450,7 +450,7 @@ export default function Quote() {
                   type="button"
                   onClick={() => canProceed() && setStep(step + 1)}
                   disabled={!canProceed()}
-                  className="flex items-center gap-2 copper-gradient hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold px-6 py-3 rounded-lg transition-all duration-200"
+                  className="flex items-center gap-2 gold-gradient hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold px-6 py-3 rounded-lg transition-all duration-200"
                 >
                   Continue <ArrowRight className="w-5 h-5" />
                 </button>
@@ -459,7 +459,7 @@ export default function Quote() {
                   key="submit"
                   type="submit"
                   disabled={status === "loading"}
-                  className="flex items-center gap-2 copper-gradient hover:opacity-90 disabled:opacity-50 text-white font-semibold px-8 py-3 rounded-lg transition-all duration-200"
+                  className="flex items-center gap-2 gold-gradient hover:opacity-90 disabled:opacity-50 text-white font-semibold px-8 py-3 rounded-lg transition-all duration-200"
                 >
                   {status === "loading" ? (
                     <>
@@ -479,14 +479,14 @@ export default function Quote() {
           <div className="mt-8 flex items-center justify-center gap-6 text-sm">
             <a
               href={`tel:${site.phoneRaw}`}
-              className="flex items-center gap-2 text-navy-600 hover:text-copper-600 transition-colors"
+              className="flex items-center gap-2 text-pine-600 hover:text-gold-600 transition-colors"
             >
               <Phone className="w-4 h-4" /> {site.phone}
             </a>
-            <span className="text-navy-300">|</span>
+            <span className="text-pine-300">|</span>
             <a
               href={`mailto:${site.email}`}
-              className="flex items-center gap-2 text-navy-600 hover:text-copper-600 transition-colors"
+              className="flex items-center gap-2 text-pine-600 hover:text-gold-600 transition-colors"
             >
               <Mail className="w-4 h-4" /> Email Us
             </a>

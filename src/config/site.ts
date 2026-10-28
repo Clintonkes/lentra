@@ -1,7 +1,9 @@
 export const site = {
   name: "Petraslynn LLC",
-  tagline: "Expert Lawn Care & Landscaping",
-  phone: "+1 321-516-4475",
+  tagline: "Lawn Care & Landscape Design",
+  description:
+    "Petraslynn LLC is a licensed and insured lawn care and landscaping company in Aurora, Colorado, caring for homes and businesses across the Denver metro area with precision mowing, pruning, seasonal cleanups, irrigation, turf care and custom landscape design.",
+  phone: "+1 (321) 516 4475",
   phoneRaw: "+13215164475",
   email: "petraslynn@proton.me",
   address: {
@@ -13,12 +15,12 @@ export const site = {
   city: "Aurora",
   state: "CO",
   hours: [
-    { day: "Monday", time: "7:00 AM – 6:00 PM" },
-    { day: "Tuesday", time: "7:00 AM – 6:00 PM" },
-    { day: "Wednesday", time: "7:00 AM – 6:00 PM" },
-    { day: "Thursday", time: "7:00 AM – 6:00 PM" },
-    { day: "Friday", time: "7:00 AM – 6:00 PM" },
-    { day: "Saturday", time: "8:00 AM – 4:00 PM" },
+    { day: "Monday", time: "7:00 AM to 6:00 PM" },
+    { day: "Tuesday", time: "7:00 AM to 6:00 PM" },
+    { day: "Wednesday", time: "7:00 AM to 6:00 PM" },
+    { day: "Thursday", time: "7:00 AM to 6:00 PM" },
+    { day: "Friday", time: "7:00 AM to 6:00 PM" },
+    { day: "Saturday", time: "8:00 AM to 4:00 PM" },
     { day: "Sunday", time: "Closed" },
   ],
   serviceAreas: [
@@ -53,14 +55,14 @@ export const services: Service[] = [
     slug: "lawn-mowing",
     title: "Lawn Mowing & Edging",
     icon: "Scissors",
-    short: "Clean cuts and crisp edges for a polished look.",
+    short: "Clean lines and crisp edges, every single visit.",
     description:
-      "Our core mowing service is tuned for Colorado's cool-season grasses. We adjust blade height by season, alternate patterns to prevent soil compaction, and finish every visit with precision power edging along all hardscapes.",
+      "Our signature service, tuned for the cool season grasses that thrive on the Front Range. We adjust cutting height through the year, alternate mowing patterns to protect your soil, and finish every visit with precision edging along drives, walks and beds.",
     features: [
-      "Weekly and bi-weekly schedules",
-      "Seasonal mowing height adjustment",
-      "Power edging along driveways and walks",
-      "Clipping cleanup and disposal",
+      "Weekly or every other week",
+      "Seasonal cutting height",
+      "Precision edging on every hard surface",
+      "Clippings cleared and hauled away",
     ],
     image:
       "https://images.pexels.com/photos/28180214/pexels-photo-28180214.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
@@ -69,14 +71,14 @@ export const services: Service[] = [
     slug: "hedge-trimming",
     title: "Hedge & Shrub Pruning",
     icon: "Sparkles",
-    short: "Sculpted shrubs and hedges that define your yard.",
+    short: "Sculpted hedges and shrubs that frame your home.",
     description:
-      "Keep ornamentals healthy and shaped to perfection. We prune each species at the optimal time for Colorado's climate — promoting dense growth, removing deadwood, and maintaining clean lines that frame your property.",
+      "Healthy ornamentals start with timing. We prune each species when Colorado's climate favors it, encouraging dense growth, clearing deadwood and keeping the clean, intentional lines that give a property its character.",
     features: [
-      "Hand and power precision shearing",
-      "Species-specific pruning timing",
+      "Hand and power shearing",
+      "Pruning timed to each species",
       "Deadwood and sucker removal",
-      "Shape restoration for overgrown shrubs",
+      "Restoration of overgrown shrubs",
     ],
     image:
       "https://images.pexels.com/photos/38936349/pexels-photo-38936349.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
@@ -87,12 +89,12 @@ export const services: Service[] = [
     icon: "Leaf",
     short: "Spring and fall cleanups that reset your landscape.",
     description:
-      "Colorado's seasons demand preparation. Our comprehensive cleanup service clears leaves, removes dead growth, cleans beds, and preps your property for winter dormancy or spring green-up — leaving your yard pristine.",
+      "Colorado seasons arrive fast. Our cleanups clear leaves and dead growth, refresh beds and prepare your property for winter rest or spring growth, so your yard is ready for whatever the season brings.",
     features: [
       "Leaf and debris removal",
       "Bed cleaning and mulch refresh",
       "Gutter clearing",
-      "Winterization and spring prep",
+      "Winter and spring preparation",
     ],
     image:
       "https://images.pexels.com/photos/9620215/pexels-photo-9620215.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
@@ -101,14 +103,14 @@ export const services: Service[] = [
     slug: "irrigation",
     title: "Irrigation & Sprinkler Service",
     icon: "Droplets",
-    short: "Efficient watering systems for Colorado's dry climate.",
+    short: "Efficient watering built for a dry climate.",
     description:
-      "Water conservation is critical on the Front Range. We install, repair, and optimize sprinkler systems with smart controllers, zone tuning, and leak detection — keeping your landscape lush while minimizing water waste.",
+      "Every drop counts on the Front Range. We install, repair and fine tune sprinkler systems with smart controllers, balanced zones and leak detection, keeping your landscape lush while your water bill stays in check.",
     features: [
       "Sprinkler installation and repair",
       "Smart controller integration",
-      "Zone optimization for coverage",
-      "Winterization and spring activation",
+      "Zone balancing for even coverage",
+      "Fall shutdown and spring startup",
     ],
     image:
       "https://images.pexels.com/photos/37720375/pexels-photo-37720375.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
@@ -117,12 +119,12 @@ export const services: Service[] = [
     slug: "landscape-design",
     title: "Landscape Design & Build",
     icon: "Trees",
-    short: "Custom outdoor spaces built for Colorado living.",
+    short: "Outdoor spaces designed around the way you live.",
     description:
-      "Transform your property with a custom landscape design. We handle concept through installation — xeriscaping, hardscapes, planting, lighting, and drainage — creating outdoor environments that thrive in Colorado's unique conditions.",
+      "From first sketch to final planting, we design and build landscapes that belong in Colorado: water wise gardens, stone patios, lighting, drainage and planting plans that look beautiful in every season.",
     features: [
       "Custom landscape planning",
-      "Xeriscape and water-wise design",
+      "Xeriscape and water wise design",
       "Stone patios and retaining walls",
       "Plant and tree installation",
     ],
@@ -133,14 +135,14 @@ export const services: Service[] = [
     slug: "turf-care",
     title: "Turf Care & Fertilization",
     icon: "Shovel",
-    short: "Science-backed treatments for a thick, green lawn.",
+    short: "Science led treatments for a thick, green lawn.",
     description:
-      "Colorado soils need targeted care. Our fertilization and weed control program is built for Front Range grass types — delivering timed nutrient applications, pre-emergent weed control, and aeration for a lawn that stays vibrant all season.",
+      "Colorado soil asks for a tailored approach. Our fertilization and weed control program is built around Front Range grasses, with precisely timed feeding, preventive weed control and aeration for turf that stays vibrant all season.",
     features: [
       "Custom fertilization schedule",
-      "Pre- and post-emergent weed control",
+      "Preventive and targeted weed control",
       "Core aeration and overseeding",
-      "Soil testing and pH amendment",
+      "Soil testing and pH correction",
     ],
     image:
       "https://images.pexels.com/photos/37554739/pexels-photo-37554739.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
@@ -274,14 +276,14 @@ export const faqs: FAQ[] = [
       "We serve Aurora and the greater Denver metro area, including Denver, Centennial, Englewood, Parker, Littleton, Greenwood Village, and Commerce City. If you are nearby but not sure if we cover your neighborhood, give us a call and we will let you know.",
   },
   {
-    question: "Do you offer one-time services or only recurring plans?",
+    question: "Do you offer single visits or only recurring plans?",
     answer:
-      "Both. We offer one-time services such as seasonal cleanups, landscape installations, and sprinkler repairs, as well as recurring weekly or bi-weekly maintenance plans for mowing, edging, and general lawn care. You choose what fits your needs.",
+      "Both. We offer single visit services such as seasonal cleanups, landscape installations and sprinkler repairs, as well as recurring weekly or every other week plans for mowing, edging and general care. You choose what fits your property.",
   },
   {
     question: "How much does lawn care cost?",
     answer:
-      "Pricing depends on your property size, the services you need, and visit frequency. We provide free, no-obligation quotes tailored to your specific property. Fill out our quote form or call us for an accurate estimate.",
+      "Pricing depends on your property size, the services you need, and visit frequency. We provide free quotes with no obligation, tailored to your property. Fill out our quote form or call us for an accurate estimate.",
   },
   {
     question: "Are you licensed and insured?",
@@ -306,6 +308,6 @@ export const faqs: FAQ[] = [
   {
     question: "How do I get started with Petraslynn LLC?",
     answer:
-      "Getting started is easy. You can fill out our online quote request form, call us directly, or send us an email. We will schedule a free property assessment, discuss your goals, and provide a detailed estimate — usually within 24 to 48 hours.",
+      "Getting started is easy. You can fill out our online quote request form, call us directly, or send us an email. We will schedule a free property assessment, discuss your goals and provide a detailed estimate, usually within 24 to 48 hours.",
   },
 ];

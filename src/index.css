@@ -4,11 +4,20 @@
 
 @layer base {
   body {
-    @apply bg-navy-50 text-navy-900 font-sans antialiased;
+    @apply bg-pine-50 text-pine-900 font-sans antialiased;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1, h2, h3 {
     @apply font-display tracking-tight;
+    font-optical-sizing: auto;
+  }
+
+  h4, h5, h6 {
+    @apply tracking-tight;
+  }
+
+  ::selection {
+    @apply bg-gold-200 text-pine-950;
   }
 }
 
@@ -17,23 +26,23 @@
     text-wrap: balance;
   }
 
-  .copper-gradient {
-    background: linear-gradient(135deg, #ef9737 0%, #e87a1a 50%, #b04710 100%);
+  .gold-gradient {
+    background: linear-gradient(135deg, #b8862f 0%, #9a6b24 55%, #7d5520 100%);
   }
 
-  .navy-gradient {
-    background: linear-gradient(160deg, #0e1835 0%, #16244a 100%);
+  .pine-gradient {
+    background: linear-gradient(160deg, #0b1811 0%, #15271d 55%, #1b3025 100%);
   }
 
-  .copper-text {
-    background: linear-gradient(135deg, #ef9737, #e87a1a);
+  .gold-text {
+    background: linear-gradient(135deg, #ecd391, #d4a955 60%, #c08f3a);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
   }
 
   .hero-radial {
-    background: radial-gradient(ellipse at top, rgba(14, 24, 53, 0.6) 0%, rgba(7, 14, 32, 0.9) 100%);
+    background: radial-gradient(ellipse at top, rgba(21, 39, 29, 0.6) 0%, rgba(11, 24, 17, 0.9) 100%);
   }
 
   .card-hover {

@@ -14,8 +14,8 @@ export default function StarRating({ rating, size = "sm" }: StarRatingProps) {
           key={i}
           className={`${starSize} ${
             i < rating
-              ? "text-copper-400 fill-copper-400"
-              : "text-navy-200"
+              ? "text-gold-400 fill-gold-400"
+              : "text-pine-200"
           }`}
         />
       ))}

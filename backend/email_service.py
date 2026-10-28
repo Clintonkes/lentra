@@ -11,8 +11,8 @@ EMAIL_ENABLED = bool(RESEND_API_KEY)
 
 BUSINESS_NAME = "PETRASLYNN LLC"
 BUSINESS_LOCATION = "AURORA, CO"
-NAVY = "#0e1835"
-COPPER = "#e87a1a"
+PINE = "#15271d"
+GOLD = "#b8862f"
 
 
 def send_email(to_email: str, subject: str, html_body: str, reply_to: str = None) -> bool:
@@ -59,27 +59,27 @@ def _details(rows: list[tuple[str, str]]) -> str:
     )
 
 
-def _layout(heading: str, body: str, header_tagline: str = "LAWN CARE & LANDSCAPING", reference: str = None) -> str:
+def _layout(heading: str, body: str, header_tagline: str = "LAWN & LANDSCAPE", reference: str = None) -> str:
     ref_html = f'<div class="ref">REF · {_e(reference)}</div>' if reference else ""
     return f"""
     <!DOCTYPE html>
     <html>
     <head>
         <style>
-            body {{ font-family: 'Helvetica Neue', Arial, sans-serif; background: #f0f4fa; margin: 0; padding: 40px; }}
-            .container {{ max-width: 600px; margin: 0 auto; background: white; border: 1px solid #d9e2f0; border-radius: 12px; overflow: hidden; }}
-            .header {{ background: {NAVY}; padding: 40px; text-align: center; }}
-            .header h1 {{ color: #ffffff; font-size: 26px; font-weight: 600; letter-spacing: 4px; margin: 0; }}
-            .header p {{ color: {COPPER}; font-size: 11px; letter-spacing: 3px; margin-top: 8px; }}
+            body {{ font-family: Inter, "Helvetica Neue", Arial, sans-serif; background: #f6f5ef; margin: 0; padding: 40px; }}
+            .container {{ max-width: 600px; margin: 0 auto; background: white; border: 1px solid #e8ebe0; border-radius: 12px; overflow: hidden; }}
+            .header {{ background: {PINE}; padding: 40px; text-align: center; }}
+            .header h1 {{ color: #ffffff; font-family: Georgia, 'Times New Roman', serif; font-size: 28px; font-weight: 600; letter-spacing: 2px; margin: 0; }}
+            .header p {{ color: {GOLD}; font-size: 11px; letter-spacing: 3px; margin-top: 8px; }}
             .body {{ padding: 40px; }}
-            .body h2 {{ color: {NAVY}; font-size: 22px; font-weight: 600; margin-bottom: 20px; }}
-            .body p {{ color: #284176; line-height: 1.7; font-size: 15px; }}
+            .body h2 {{ color: {PINE}; font-size: 22px; font-weight: 600; margin-bottom: 20px; }}
+            .body p {{ color: #324836; line-height: 1.7; font-size: 15px; }}
             .status-badge {{ display: inline-block; padding: 8px 20px; color: white; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; border-radius: 6px; margin: 8px 0 16px; }}
-            .details {{ background: #f0f4fa; padding: 24px; margin: 24px 0; border-left: 3px solid {COPPER}; }}
-            .details p {{ margin: 8px 0; font-size: 14px; color: {NAVY}; }}
-            .ref {{ font-family: 'Courier New', monospace; font-size: 12px; color: #8098c8; text-align: center; margin-top: 10px; letter-spacing: 2px; }}
-            .footer {{ padding: 30px 40px; border-top: 1px solid #d9e2f0; text-align: center; }}
-            .footer p {{ font-size: 12px; color: #8098c8; margin: 4px 0; }}
+            .details {{ background: #f6f5ef; padding: 24px; margin: 24px 0; border-left: 3px solid {GOLD}; }}
+            .details p {{ margin: 8px 0; font-size: 14px; color: {PINE}; }}
+            .ref {{ font-family: 'Courier New', monospace; font-size: 12px; color: #7a9378; text-align: center; margin-top: 10px; letter-spacing: 2px; }}
+            .footer {{ padding: 30px 40px; border-top: 1px solid #e8ebe0; text-align: center; }}
+            .footer p {{ font-size: 12px; color: #7a9378; margin: 4px 0; }}
         </style>
     </head>
     <body>
@@ -156,14 +156,14 @@ def booking_status_html(name: str, reference: str, status: str, address: str) ->
     }
 
     status_colors = {
-        "confirmed": COPPER,
-        "approved": COPPER,
+        "confirmed": GOLD,
+        "approved": GOLD,
         "cancelled": "#c0392b",
-        "completed": NAVY,
+        "completed": PINE,
     }
 
     message = status_messages.get(status, f"Your request status has been updated to {_e(display_status)}.")
-    color = status_colors.get(status, NAVY)
+    color = status_colors.get(status, PINE)
 
     body = f"""
         <div class="status-badge" style="background: {color};">{_e(display_status)}</div>

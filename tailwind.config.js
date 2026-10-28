@@ -4,34 +4,36 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Outfit", "sans-serif"],
-        display: ["Outfit", "sans-serif"],
+        sans: ["Inter", "system-ui", "sans-serif"],
+        display: ["Fraunces", "Georgia", "serif"],
       },
       colors: {
-        navy: {
-          50: "#f0f4fa",
-          100: "#d9e2f0",
-          200: "#b3c5e1",
-          300: "#8098c8",
-          400: "#536fab",
-          500: "#34518f",
-          600: "#284176",
-          700: "#1f3460",
-          800: "#16244a",
-          900: "#0e1835",
-          950: "#070e20",
+        // Deep evergreen: dark sections, headings and body text.
+        pine: {
+          50: "#f6f5ef",
+          100: "#e8ebe0",
+          200: "#cdd6c6",
+          300: "#a5b69f",
+          400: "#7a9378",
+          500: "#58735a",
+          600: "#425c45",
+          700: "#324836",
+          800: "#22372a",
+          900: "#15271d",
+          950: "#0b1811",
         },
-        copper: {
-          50: "#fef7ed",
-          100: "#fdedd3",
-          200: "#fad7a5",
-          300: "#f5bb6d",
-          400: "#ef9737",
-          500: "#e87a1a",
-          600: "#d35e10",
-          700: "#b04710",
-          800: "#8d3913",
-          900: "#722f14",
+        // Burnished gold: accents, calls to action and highlights.
+        gold: {
+          50: "#fbf8ef",
+          100: "#f5ecd3",
+          200: "#ebd8a6",
+          300: "#e0c07a",
+          400: "#d4a955",
+          500: "#c08f3a",
+          600: "#9a6b24",
+          700: "#7d5520",
+          800: "#664520",
+          900: "#553a1f",
         },
       },
       keyframes: {

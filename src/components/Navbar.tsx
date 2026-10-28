@@ -1,7 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Menu, X, Phone, Leaf } from "lucide-react";
+import { Menu, X, Phone } from "lucide-react";
 import { site } from "@/config/site";
+import Logo from "./Logo";
 
 const navLinks = [
   { to: "/", label: "Home" },
@@ -37,27 +38,15 @@ export default function Navbar() {
       <div
         className={`transition-all duration-400 ${
           scrolled
-            ? "bg-navy-900 shadow-2xl shadow-navy-950/30"
-            : "bg-navy-900/90 backdrop-blur-md"
+            ? "bg-pine-900 shadow-2xl shadow-pine-950/30"
+            : "bg-pine-900/90 backdrop-blur-md"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-3 group">
-              <div className="relative">
-                <div className="w-12 h-12 rounded-xl copper-gradient flex items-center justify-center shadow-lg shadow-copper-500/30 transition-transform group-hover:scale-105">
-                  <Leaf className="w-6 h-6 text-white" />
-                </div>
-              </div>
-              <div className="flex flex-col leading-none">
-                <span className="text-white font-bold text-lg tracking-tight">
-                  Petraslynn
-                </span>
-                <span className="text-copper-400 text-[10px] font-semibold tracking-[0.2em] uppercase">
-                  Lawn Care
-                </span>
-              </div>
+            <Link to="/" className="flex items-center group" aria-label="Petraslynn LLC home">
+              <Logo />
             </Link>
 
             {/* Desktop nav */}
@@ -68,13 +57,13 @@ export default function Navbar() {
                   to={link.to}
                   className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                     isActive(link.to)
-                      ? "text-copper-400"
-                      : "text-navy-100 hover:text-copper-400"
+                      ? "text-gold-400"
+                      : "text-pine-100 hover:text-gold-400"
                   }`}
                 >
                   {link.label}
                   {isActive(link.to) && (
-                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 copper-gradient rounded-full" />
+                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 gold-gradient rounded-full" />
                   )}
                 </Link>
               ))}
@@ -84,14 +73,14 @@ export default function Navbar() {
             <div className="hidden lg:flex items-center gap-4">
               <a
                 href={`tel:${site.phoneRaw}`}
-                className="flex items-center gap-2 text-navy-100 hover:text-copper-400 font-medium text-sm transition-colors"
+                className="flex items-center gap-2 text-pine-100 hover:text-gold-400 font-medium text-sm transition-colors"
               >
                 <Phone className="w-4 h-4" />
                 {site.phone}
               </a>
               <Link
                 to="/quote"
-                className="copper-gradient hover:opacity-90 text-white font-semibold px-5 py-2.5 rounded-lg text-sm transition-all duration-200 shadow-lg shadow-copper-500/20"
+                className="gold-gradient hover:opacity-90 text-white font-semibold px-5 py-2.5 rounded-lg text-sm transition-all duration-200 shadow-lg shadow-gold-500/20"
               >
                 Free Quote
               </Link>
@@ -110,7 +99,7 @@ export default function Navbar() {
 
         {/* Mobile menu */}
         {isOpen && (
-          <div className="lg:hidden bg-navy-950 border-t border-navy-800">
+          <div className="lg:hidden bg-pine-950 border-t border-pine-800">
             <nav className="flex flex-col px-4 py-4 gap-1">
               {navLinks.map((link) => (
                 <Link
@@ -118,8 +107,8 @@ export default function Navbar() {
                   to={link.to}
                   className={`px-4 py-3 rounded-lg text-sm font-medium transition-all ${
                     isActive(link.to)
-                      ? "text-copper-400 bg-copper-500/10"
-                      : "text-navy-100 hover:bg-navy-800"
+                      ? "text-gold-400 bg-gold-500/10"
+                      : "text-pine-100 hover:bg-pine-800"
                   }`}
                 >
                   {link.label}
@@ -127,13 +116,13 @@ export default function Navbar() {
               ))}
               <Link
                 to="/quote"
-                className="mt-2 copper-gradient text-white font-semibold px-6 py-3 rounded-lg text-center text-sm"
+                className="mt-2 gold-gradient text-white font-semibold px-6 py-3 rounded-lg text-center text-sm"
               >
                 Get a Free Quote
               </Link>
               <a
                 href={`tel:${site.phoneRaw}`}
-                className="flex items-center justify-center gap-2 mt-2 text-navy-100 font-medium text-sm"
+                className="flex items-center justify-center gap-2 mt-2 text-pine-100 font-medium text-sm"
               >
                 <Phone className="w-4 h-4" /> {site.phone}
               </a>

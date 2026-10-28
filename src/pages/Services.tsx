@@ -21,7 +21,7 @@ export default function Services() {
     <div>
       <PageHeader
         title="Our Services"
-        subtitle="Full-service lawn care and landscape management designed for Colorado's Front Range."
+        subtitle="Complete lawn care and landscape management designed for Colorado's Front Range."
         breadcrumb="Services"
         image={heroImage}
       />
@@ -30,15 +30,15 @@ export default function Services() {
       <section className="py-24 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <span className="text-copper-600 font-bold text-sm uppercase tracking-widest">
+            <span className="text-gold-600 font-bold text-sm uppercase tracking-widest">
               Complete Lawn Care
             </span>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-navy-900 mt-2 mb-4">
+            <h2 className="text-3xl md:text-4xl font-semibold text-pine-900 mt-2 mb-4">
               Everything Your Property Needs
             </h2>
-            <p className="text-navy-600 max-w-2xl mx-auto">
+            <p className="text-pine-600 max-w-2xl mx-auto">
               Click any service below to see the details. All services are
-              available as one-time visits or recurring plans.
+              available as single visits or recurring plans.
             </p>
           </div>
 
@@ -51,8 +51,8 @@ export default function Services() {
                   key={service.slug}
                   className={`rounded-2xl border transition-all duration-300 overflow-hidden ${
                     isOpen
-                      ? "border-copper-300 shadow-lg"
-                      : "border-navy-100 hover:border-navy-200"
+                      ? "border-gold-300 shadow-lg"
+                      : "border-pine-100 hover:border-pine-200"
                   }`}
                 >
                   <button
@@ -62,29 +62,29 @@ export default function Services() {
                     <div
                       className={`w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
                         isOpen
-                          ? "copper-gradient"
-                          : "bg-navy-50"
+                          ? "gold-gradient"
+                          : "bg-pine-50"
                       }`}
                     >
                       <Icon
                         className={`w-7 h-7 ${
-                          isOpen ? "text-white" : "text-navy-700"
+                          isOpen ? "text-white" : "text-pine-700"
                         }`}
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-lg text-navy-900">
+                      <h3 className="font-bold text-lg text-pine-900">
                         {service.title}
                       </h3>
-                      <p className="text-navy-500 text-sm mt-0.5 truncate">
+                      <p className="text-pine-500 text-sm mt-0.5 truncate">
                         {service.short}
                       </p>
                     </div>
                     <div
                       className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
                         isOpen
-                          ? "bg-copper-100 text-copper-600 rotate-180"
-                          : "bg-navy-50 text-navy-400"
+                          ? "bg-gold-100 text-gold-600 rotate-180"
+                          : "bg-pine-50 text-pine-400"
                       }`}
                     >
                       <ChevronDown className="w-5 h-5" />
@@ -99,7 +99,7 @@ export default function Services() {
                   >
                     <div className="overflow-hidden">
                       <div className="px-5 pb-6">
-                        <div className="border-t border-navy-100 pt-5">
+                        <div className="border-t border-pine-100 pt-5">
                           <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
                             <div className="md:col-span-2">
                               <div className="rounded-xl overflow-hidden h-44">
@@ -111,7 +111,7 @@ export default function Services() {
                               </div>
                             </div>
                             <div className="md:col-span-3">
-                              <p className="text-navy-600 text-sm leading-relaxed mb-4">
+                              <p className="text-pine-600 text-sm leading-relaxed mb-4">
                                 {service.description}
                               </p>
                               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
@@ -120,10 +120,10 @@ export default function Services() {
                                     key={feature}
                                     className="flex items-start gap-2"
                                   >
-                                    <div className="w-5 h-5 rounded-full bg-copper-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                      <Check className="w-3.5 h-3.5 text-copper-600" />
+                                    <div className="w-5 h-5 rounded-full bg-gold-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                      <Check className="w-3.5 h-3.5 text-gold-600" />
                                     </div>
-                                    <span className="text-navy-700 text-sm">
+                                    <span className="text-pine-700 text-sm">
                                       {feature}
                                     </span>
                                   </li>
@@ -131,7 +131,7 @@ export default function Services() {
                               </ul>
                               <Link
                                 to="/quote"
-                                className="inline-flex items-center gap-2 text-copper-600 font-semibold text-sm hover:gap-3 transition-all"
+                                className="inline-flex items-center gap-2 text-gold-600 font-semibold text-sm hover:gap-3 transition-all"
                               >
                                 Request This Service
                                 <ArrowRight className="w-4 h-4" />
@@ -150,13 +150,13 @@ export default function Services() {
       </section>
 
       {/* Process — horizontal timeline on navy */}
-      <section className="py-24 navy-gradient">
+      <section className="py-24 pine-gradient">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <span className="text-copper-400 font-bold text-sm uppercase tracking-widest">
+            <span className="text-gold-400 font-bold text-sm uppercase tracking-widest">
               Getting Started
             </span>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-white mt-2 mb-4">
+            <h2 className="text-3xl md:text-4xl font-semibold text-white mt-2 mb-4">
               How to Get Service
             </h2>
           </div>
@@ -169,15 +169,15 @@ export default function Services() {
             ].map((item) => (
               <div
                 key={item.step}
-                className="relative bg-navy-800/60 rounded-2xl p-6 border border-navy-700"
+                className="relative bg-pine-800/60 rounded-2xl p-6 border border-pine-700"
               >
-                <div className="text-5xl font-extrabold copper-text mb-3">
+                <div className="text-5xl font-semibold gold-text mb-3">
                   {item.step}
                 </div>
                 <h3 className="font-bold text-white text-lg mb-2">
                   {item.title}
                 </h3>
-                <p className="text-navy-300 text-sm leading-relaxed">
+                <p className="text-pine-300 text-sm leading-relaxed">
                   {item.text}
                 </p>
               </div>
@@ -187,9 +187,9 @@ export default function Services() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 copper-gradient">
+      <section className="py-16 gold-gradient">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-extrabold text-white mb-4">
+          <h2 className="text-3xl font-semibold text-white mb-4">
             Ready to Get Started?
           </h2>
           <p className="text-white/90 mb-8">
@@ -198,7 +198,7 @@ export default function Services() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               to="/quote"
-              className="bg-navy-900 hover:bg-navy-800 text-white font-semibold px-8 py-4 rounded-lg transition-all duration-200 flex items-center gap-2"
+              className="bg-pine-900 hover:bg-pine-800 text-white font-semibold px-8 py-4 rounded-lg transition-all duration-200 flex items-center gap-2"
             >
               Get a Free Quote <ArrowRight className="w-5 h-5" />
             </Link>
