@@ -26,11 +26,19 @@ jobs:
           node-version: 20
           cache: npm
           cache-dependency-path: package-lock.json
-      # base_path is "/noelson" on the default github.io URL and "" once a
+      # Without it the quote and contact forms would have no backend to post to.
+      - name: Check VITE_API_URL is set
+        run: |
+          if [ -z "${{ vars.VITE_API_URL }}" ]; then
+            echo "::error::Set the repo variable VITE_API_URL (Settings > Secrets and variables > Actions > Variables) to the Render backend URL."
+            exit 1
+          fi
+      # base_path is "/<repo>" on the default github.io URL and "" once a
       # custom domain is set, so the same build command serves both.
       - id: pages
         uses: actions/configure-pages@v5
       - run: npm ci
+      - run: npm run lint
       - run: npm run build -- --base="${{ steps.pages.outputs.base_path }}/"
         env:
           VITE_API_URL: ${{ vars.VITE_API_URL }}

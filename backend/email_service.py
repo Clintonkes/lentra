@@ -1,6 +1,4 @@
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+from html import escape
 import logging
 import os
 
@@ -8,11 +6,16 @@ logger = logging.getLogger(__name__)
 
 # Email configuration - Resend API
 RESEND_API_KEY = os.getenv("RESEND_API_KEY")
-EMAIL_FROM = os.getenv("EMAIL_FROM", "onboarding@resend.dev")
+EMAIL_FROM = os.getenv("EMAIL_FROM", "Petraslynn LLC <onboarding@resend.dev>")
 EMAIL_ENABLED = bool(RESEND_API_KEY)
 
+BUSINESS_NAME = "PETRASLYNN LLC"
+BUSINESS_LOCATION = "AURORA, CO"
+NAVY = "#0e1835"
+COPPER = "#e87a1a"
 
-def send_email(to_email: str, subject: str, html_body: str) -> bool:
+
+def send_email(to_email: str, subject: str, html_body: str, reply_to: str = None) -> bool:
     if not EMAIL_ENABLED:
         logger.info(f"Email disabled. Would send to {to_email}: {subject}")
         return True
@@ -20,18 +23,22 @@ def send_email(to_email: str, subject: str, html_body: str) -> bool:
     try:
         import httpx
 
+        payload = {
+            "from": EMAIL_FROM,
+            "to": [to_email],
+            "subject": subject,
+            "html": html_body,
+        }
+        if reply_to:
+            payload["reply_to"] = reply_to
         response = httpx.post(
             "https://api.resend.com/emails",
             headers={
                 "Authorization": f"Bearer {RESEND_API_KEY}",
                 "Content-Type": "application/json",
             },
-            json={
-                "from": EMAIL_FROM,
-                "to": [to_email],
-                "subject": subject,
-                "html": html_body,
-            },
+            json=payload,
+            timeout=10,
         )
         response.raise_for_status()
         logger.info(f"Email sent to {to_email}: {subject}")
@@ -41,65 +48,98 @@ def send_email(to_email: str, subject: str, html_body: str) -> bool:
         return False
 
 
-TIME_WINDOW_LABELS = {
-    "morning": "Morning (8am to 12pm)",
-    "afternoon": "Afternoon (12pm to 4pm)",
-    "evening": "Evening (4pm to 7pm)",
-}
+def _e(value) -> str:
+    """Escape user-submitted text before it goes into an email's HTML."""
+    return escape(str(value)) if value else ""
 
 
-def booking_confirmation_html(name: str, reference: str, address: str, service: str = None, frequency: str = None, preferred_date=None, preferred_time: str = None) -> str:
-    date_display = preferred_date.strftime("%B %-d, %Y") if preferred_date else "To be scheduled"
-    time_display = TIME_WINDOW_LABELS.get(preferred_time, preferred_time or "To be scheduled")
-    service_display = service or (frequency.title() if frequency else "To be determined")
+def _details(rows: list[tuple[str, str]]) -> str:
+    return "".join(
+        f"<p><strong>{label}:</strong> {_e(value)}</p>" for label, value in rows if value
+    )
+
+
+def _layout(heading: str, body: str, header_tagline: str = "LAWN CARE & LANDSCAPING", reference: str = None) -> str:
+    ref_html = f'<div class="ref">REF · {_e(reference)}</div>' if reference else ""
     return f"""
     <!DOCTYPE html>
     <html>
     <head>
         <style>
-            body {{ font-family: 'Helvetica Neue', Arial, sans-serif; background: #f9f8f4; margin: 0; padding: 40px; }}
-            .container {{ max-width: 600px; margin: 0 auto; background: white; border: 1px solid #e5e5e5; }}
-            .header {{ background: #0e2540; padding: 40px; text-align: center; }}
-            .header h1 {{ color: #F9F8F4; font-size: 28px; font-weight: 300; letter-spacing: 4px; margin: 0; }}
-            .header p {{ color: #c98c33; font-size: 11px; letter-spacing: 3px; margin-top: 8px; }}
+            body {{ font-family: 'Helvetica Neue', Arial, sans-serif; background: #f0f4fa; margin: 0; padding: 40px; }}
+            .container {{ max-width: 600px; margin: 0 auto; background: white; border: 1px solid #d9e2f0; border-radius: 12px; overflow: hidden; }}
+            .header {{ background: {NAVY}; padding: 40px; text-align: center; }}
+            .header h1 {{ color: #ffffff; font-size: 26px; font-weight: 600; letter-spacing: 4px; margin: 0; }}
+            .header p {{ color: {COPPER}; font-size: 11px; letter-spacing: 3px; margin-top: 8px; }}
             .body {{ padding: 40px; }}
-            .body h2 {{ color: #0e2540; font-size: 22px; font-weight: 300; margin-bottom: 20px; }}
-            .body p {{ color: #555; line-height: 1.7; font-size: 15px; }}
-            .details {{ background: #f9f8f4; padding: 24px; margin: 24px 0; border-left: 3px solid #c98c33; }}
-            .details p {{ margin: 8px 0; font-size: 14px; color: #0e2540; }}
-            .details strong {{ color: #0e2540; }}
-            .ref {{ font-family: 'Courier New', monospace; font-size: 12px; color: #999; text-align: center; margin-top: 30px; letter-spacing: 2px; }}
-            .footer {{ padding: 30px 40px; border-top: 1px solid #eee; text-align: center; }}
-            .footer p {{ font-size: 12px; color: #999; margin: 4px 0; }}
+            .body h2 {{ color: {NAVY}; font-size: 22px; font-weight: 600; margin-bottom: 20px; }}
+            .body p {{ color: #284176; line-height: 1.7; font-size: 15px; }}
+            .status-badge {{ display: inline-block; padding: 8px 20px; color: white; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; border-radius: 6px; margin: 8px 0 16px; }}
+            .details {{ background: #f0f4fa; padding: 24px; margin: 24px 0; border-left: 3px solid {COPPER}; }}
+            .details p {{ margin: 8px 0; font-size: 14px; color: {NAVY}; }}
+            .ref {{ font-family: 'Courier New', monospace; font-size: 12px; color: #8098c8; text-align: center; margin-top: 10px; letter-spacing: 2px; }}
+            .footer {{ padding: 30px 40px; border-top: 1px solid #d9e2f0; text-align: center; }}
+            .footer p {{ font-size: 12px; color: #8098c8; margin: 4px 0; }}
         </style>
     </head>
     <body>
         <div class="container">
             <div class="header">
-                <h1>NOELSON LLC</h1>
-                <p>LAWN CARE & LANDSCAPING</p>
+                <h1>{BUSINESS_NAME}</h1>
+                <p>{header_tagline}</p>
             </div>
             <div class="body">
-                <h2>Thank you, {name}.</h2>
-                <p>Your service request has been received. A Noelson specialist will review your request and contact you within one business day.</p>
-                <div class="details">
-                    <p><strong>Service:</strong> {service_display}</p>
-                    <p><strong>Property Address:</strong> {address}</p>
-                    <p><strong>Preferred Start Date:</strong> {date_display}</p>
-                    <p><strong>Preferred Time:</strong> {time_display}</p>
-                    <p><strong>Status:</strong> Pending Review</p>
-                </div>
-                <p>We appreciate your interest in NOELSON LAWN CARE. Our team is committed to providing reliable lawn care in Palm Bay, FL and across Brevard County.</p>
+                <h2>{heading}</h2>
+                {body}
             </div>
-            <div class="ref">REF · {reference}</div>
+            {ref_html}
             <div class="footer">
-                <p>NOELSON LLC · PALM BAY, FL</p>
+                <p>{BUSINESS_NAME} · {BUSINESS_LOCATION}</p>
                 <p>LICENSED · INSURED</p>
             </div>
         </div>
     </body>
     </html>
     """
+
+
+def booking_confirmation_html(name: str, reference: str, address: str, service: str = None, frequency: str = None, preferred_date=None, preferred_time: str = None) -> str:
+    date_display = preferred_date.strftime("%B %-d, %Y") if preferred_date else "To be scheduled"
+    body = f"""
+        <p>Your quote request has been received. A Petraslynn specialist will review it and contact you within one business day to schedule your free property assessment.</p>
+        <div class="details">
+            {_details([
+                ("Service", service or "To be determined"),
+                ("Frequency", frequency),
+                ("Property Address", address),
+                ("Preferred Start Date", date_display),
+                ("Preferred Time", preferred_time),
+                ("Status", "Pending Review"),
+            ])}
+        </div>
+        <p>Thank you for choosing Petraslynn LLC for lawn care in Aurora and the Denver metro area.</p>
+    """
+    return _layout(f"Thank you, {_e(name)}.", body, reference=reference)
+
+
+def booking_admin_notification_html(booking) -> str:
+    body = f"""
+        <div class="details">
+            {_details([
+                ("Name", booking.name),
+                ("Email", booking.email),
+                ("Phone", booking.phone),
+                ("Address", booking.address),
+                ("Service", booking.service),
+                ("Property Size", booking.lawn_size),
+                ("Frequency", booking.frequency),
+                ("Preferred Date", booking.preferred_date.strftime("%B %-d, %Y") if booking.preferred_date else None),
+                ("Notes", booking.notes),
+            ])}
+        </div>
+        <p>Reply to this email to respond to the customer directly.</p>
+    """
+    return _layout(f"New quote request from {_e(booking.name)}", body, header_tagline="NEW QUOTE REQUEST", reference=booking.reference)
 
 
 def booking_status_html(name: str, reference: str, status: str, address: str) -> str:
@@ -109,150 +149,52 @@ def booking_status_html(name: str, reference: str, status: str, address: str) ->
     display_status = status.capitalize()
 
     status_messages = {
+        "confirmed": "Your service request has been <strong>confirmed</strong>. We look forward to caring for your property.",
         "approved": "Your service request has been <strong>approved</strong>. Our team will contact you shortly to schedule your first visit.",
         "cancelled": "Your service request has been <strong>cancelled</strong>. If you believe this is an error, please contact us.",
-        "completed": "Your service has been <strong>completed</strong>. Thank you for choosing NOELSON LAWN CARE for your lawncare needs.",
+        "completed": "Your service has been <strong>completed</strong>. Thank you for choosing Petraslynn LLC for your lawn care needs.",
     }
 
     status_colors = {
-        "approved": "#c98c33",
+        "confirmed": COPPER,
+        "approved": COPPER,
         "cancelled": "#c0392b",
-        "completed": "#0e2540",
+        "completed": NAVY,
     }
 
-    message = status_messages.get(status, f"Your request status has been updated to {display_status}.")
-    color = status_colors.get(status, "#0e2540")
+    message = status_messages.get(status, f"Your request status has been updated to {_e(display_status)}.")
+    color = status_colors.get(status, NAVY)
 
-    return f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <style>
-            body {{ font-family: 'Helvetica Neue', Arial, sans-serif; background: #f9f8f4; margin: 0; padding: 40px; }}
-            .container {{ max-width: 600px; margin: 0 auto; background: white; border: 1px solid #e5e5e5; }}
-            .header {{ background: #0e2540; padding: 40px; text-align: center; }}
-            .header h1 {{ color: #F9F8F4; font-size: 28px; font-weight: 300; letter-spacing: 4px; margin: 0; }}
-            .header p {{ color: #c98c33; font-size: 11px; letter-spacing: 3px; margin-top: 8px; }}
-            .body {{ padding: 40px; }}
-            .body h2 {{ color: #0e2540; font-size: 22px; font-weight: 300; margin-bottom: 20px; }}
-            .body p {{ color: #555; line-height: 1.7; font-size: 15px; }}
-            .status-badge {{ display: inline-block; padding: 8px 20px; background: {color}; color: white; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; font-weight: 500; margin: 16px 0; }}
-            .details {{ background: #f9f8f4; padding: 24px; margin: 24px 0; border-left: 3px solid #c98c33; }}
-            .details p {{ margin: 8px 0; font-size: 14px; color: #0e2540; }}
-            .details strong {{ color: #0e2540; }}
-            .ref {{ font-family: 'Courier New', monospace; font-size: 12px; color: #999; text-align: center; margin-top: 30px; letter-spacing: 2px; }}
-            .footer {{ padding: 30px 40px; border-top: 1px solid #eee; text-align: center; }}
-            .footer p {{ font-size: 12px; color: #999; margin: 4px 0; }}
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="header">
-                <h1>NOELSON LLC</h1>
-                <p>LAWN CARE & LANDSCAPING</p>
-            </div>
-            <div class="body">
-                <h2>Hello, {name}.</h2>
-                <div class="status-badge">{display_status}</div>
-                <p>{message}</p>
-                <div class="details">
-                    <p><strong>Property Address:</strong> {address}</p>
-                    <p><strong>Reference:</strong> {reference}</p>
-                </div>
-            </div>
-            <div class="ref">REF · {reference}</div>
-            <div class="footer">
-                <p>NOELSON LLC · PALM BAY, FL</p>
-                <p>LICENSED · INSURED</p>
-            </div>
+    body = f"""
+        <div class="status-badge" style="background: {color};">{_e(display_status)}</div>
+        <p>{message}</p>
+        <div class="details">
+            {_details([("Property Address", address), ("Reference", reference)])}
         </div>
-    </body>
-    </html>
     """
+    return _layout(f"Hello, {_e(name)}.", body, reference=reference)
 
 
 def contact_confirmation_html(name: str, subject: str, message: str) -> str:
-    return f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <style>
-            body {{ font-family: 'Helvetica Neue', Arial, sans-serif; background: #f9f8f4; margin: 0; padding: 40px; }}
-            .container {{ max-width: 600px; margin: 0 auto; background: white; border: 1px solid #e5e5e5; }}
-            .header {{ background: #0e2540; padding: 40px; text-align: center; }}
-            .header h1 {{ color: #F9F8F4; font-size: 28px; font-weight: 300; letter-spacing: 4px; margin: 0; }}
-            .header p {{ color: #c98c33; font-size: 11px; letter-spacing: 3px; margin-top: 8px; }}
-            .body {{ padding: 40px; }}
-            .body h2 {{ color: #0e2540; font-size: 22px; font-weight: 300; margin-bottom: 20px; }}
-            .body p {{ color: #555; line-height: 1.7; font-size: 15px; }}
-            .message-box {{ background: #f9f8f4; padding: 24px; margin: 24px 0; border-left: 3px solid #c98c33; }}
-            .message-box p {{ margin: 8px 0; font-size: 14px; color: #0e2540; }}
-            .footer {{ padding: 30px 40px; border-top: 1px solid #eee; text-align: center; }}
-            .footer p {{ font-size: 12px; color: #999; margin: 4px 0; }}
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="header">
-                <h1>NOELSON LLC</h1>
-                <p>LAWN CARE & LANDSCAPING</p>
-            </div>
-            <div class="body">
-                <h2>Thank you, {name}.</h2>
-                <p>We have received your message and will respond within one business day.</p>
-                <div class="message-box">
-                    <p><strong>Subject:</strong> {subject or "No subject"}</p>
-                    <p><strong>Message:</strong> {message}</p>
-                </div>
-            </div>
-            <div class="footer">
-                <p>NOELSON LLC · PALM BAY, FL</p>
-                <p>LICENSED · INSURED</p>
-            </div>
+    body = f"""
+        <p>We have received your message and will respond within one business day.</p>
+        <div class="details">
+            {_details([("Subject", subject or "No subject"), ("Message", message)])}
         </div>
-    </body>
-    </html>
     """
+    return _layout(f"Thank you, {_e(name)}.", body)
 
 
-def contact_admin_notification_html(name: str, email: str, subject: str, message: str) -> str:
-    return f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <style>
-            body {{ font-family: 'Helvetica Neue', Arial, sans-serif; background: #f9f8f4; margin: 0; padding: 40px; }}
-            .container {{ max-width: 600px; margin: 0 auto; background: white; border: 1px solid #e5e5e5; }}
-            .header {{ background: #0e2540; padding: 40px; text-align: center; }}
-            .header h1 {{ color: #F9F8F4; font-size: 28px; font-weight: 300; letter-spacing: 4px; margin: 0; }}
-            .header p {{ color: #c98c33; font-size: 11px; letter-spacing: 3px; margin-top: 8px; }}
-            .body {{ padding: 40px; }}
-            .body h2 {{ color: #0e2540; font-size: 22px; font-weight: 300; margin-bottom: 20px; }}
-            .body p {{ color: #555; line-height: 1.7; font-size: 15px; }}
-            .details {{ background: #f9f8f4; padding: 24px; margin: 24px 0; border-left: 3px solid #c98c33; }}
-            .details p {{ margin: 8px 0; font-size: 14px; color: #0e2540; }}
-            .footer {{ padding: 30px 40px; border-top: 1px solid #eee; text-align: center; }}
-            .footer p {{ font-size: 12px; color: #999; margin: 4px 0; }}
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="header">
-                <h1>NOELSON LAWN CARE</h1>
-                <p>NEW CONTACT MESSAGE</p>
-            </div>
-            <div class="body">
-                <h2>New message from {name}</h2>
-                <div class="details">
-                    <p><strong>From:</strong> {name} ({email})</p>
-                    <p><strong>Subject:</strong> {subject or "No subject"}</p>
-                    <p><strong>Message:</strong> {message}</p>
-                </div>
-            </div>
-            <div class="footer">
-                <p>NOELSON LLC · PALM BAY, FL</p>
-            </div>
+def contact_admin_notification_html(name: str, email: str, subject: str, message: str, phone: str = None) -> str:
+    body = f"""
+        <div class="details">
+            {_details([
+                ("From", f"{name} ({email})"),
+                ("Phone", phone),
+                ("Subject", subject or "No subject"),
+                ("Message", message),
+            ])}
         </div>
-    </body>
-    </html>
+        <p>Reply to this email to respond to the customer directly.</p>
     """
+    return _layout(f"New message from {_e(name)}", body, header_tagline="NEW CONTACT MESSAGE")

@@ -2,18 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <!-- Every photo on the site is served from Pexels' CDN; opening the
-         connection before the first image is requested saves the DNS + TLS
-         handshake. No "crossorigin" here: plain <img> requests are not
-         CORS requests, and a crossorigin preconnect opens a separate
-         connection they cannot use. -->
-    <link rel="preconnect" href="https://images.pexels.com" />
-    <link rel="dns-prefetch" href="https://images.pexels.com" />
     <script>
       // Decodes the path public/404.html encoded before redirecting here,
       // restoring the real URL so React Router mounts on the right route.
-      // Must stay above the preload placeholder below, which reads the
-      // real path.
       (function (l) {
         if (l.search[1] === '/') {
           var decoded = l.search
@@ -27,38 +18,20 @@
         }
       })(window.location);
     </script>
-    <!-- The build replaces this with a script that preloads the top photo
-         of the page being opened (see vite.config.ts). It has to sit above
-         every stylesheet: an inline script placed after one cannot run
-         until that stylesheet has finished downloading. -->
-    <!--entry-image-preload-->
-    <!-- The Inter font is loaded without blocking rendering (it applies as
-         soon as it arrives). Importing it from inside the site stylesheet
-         instead made React, and therefore every photo, wait for it. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0e1835" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://images.pexels.com" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      media="print"
-      onload="this.media='all'"
-    />
-    <link rel="icon" href="/favicon.ico" sizes="any" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0e2540" />
-    <title>Noelson LLC | Lawn Care & Landscaping in Palm Bay, FL</title>
-    <meta name="description" content="Professional lawn care and landscaping serving Palm Bay, FL and Brevard County. Lawn mowing, landscape design, palm tree care, irrigation, pest & weed control, and storm cleanup. Free estimates." />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <title>Petraslynn LLC | Premier Lawn Care in Aurora, CO</title>
+    <meta name="description" content="Petraslynn LLC — Professional lawncare and landscaping services in Aurora, CO. Lawn mowing, hedge trimming, yard cleanup, irrigation, landscape design, and turf care." />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Noelson LLC" />
-    <meta property="og:title" content="Noelson LLC | Lawn Care & Landscaping in Palm Bay, FL" />
-    <meta property="og:description" content="Professional lawn care and landscaping serving Palm Bay, FL and Brevard County. Lawn mowing, landscape design, palm tree care, irrigation, pest & weed control, and storm cleanup. Free estimates." />
-    <!-- Social scrapers need an absolute URL. -->
-    <meta property="og:url" content="https://noelsonlawncare.com/" />
-    <meta property="og:image" content="https://noelsonlawncare.com/assets/images/app_logo.png" />
+    <meta property="og:site_name" content="Petraslynn LLC" />
+    <meta property="og:title" content="Petraslynn LLC | Premier Lawn Care in Aurora, CO" />
+    <meta property="og:description" content="Professional lawn care and landscaping in Aurora and the Denver metro area. Free estimates." />
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:image" content="https://noelsonlawncare.com/assets/images/app_logo.png" />
   </head>
   <body>
     <div id="root"></div>

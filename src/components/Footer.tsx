@@ -1,80 +1,72 @@
-import { Link } from 'react-router-dom';
-import { Phone, Mail, MapPin, Clock, Facebook, Instagram, Star } from 'lucide-react';
-import { business } from '@/data/business';
-import logo from '@/assets/noelson-logo.svg';
+import { Link } from "react-router-dom";
+import { Phone, Mail, MapPin, Clock, Facebook, Instagram, Leaf } from "lucide-react";
+import { site } from "@/config/site";
 
-const serviceLinks = ['Lawn Mowing & Edging', 'Landscape Design', 'Palm Tree Trimming', 'Irrigation Services', 'Pest & Weed Control', 'Maintenance Plans'];
-const companyLinks = [
-  { to: '/about', label: 'About Us' },
-  { to: '/gallery', label: 'Project Gallery' },
-  { to: '/testimonials', label: 'Customer Reviews' },
-  { to: '/faq', label: 'FAQ' },
-  { to: '/quote', label: 'Request a Quote' },
-  { to: '/contact', label: 'Contact Us' },
+const quickLinks = [
+  { to: "/", label: "Home" },
+  { to: "/about", label: "About Us" },
+  { to: "/services", label: "Services" },
+  { to: "/gallery", label: "Gallery" },
+  { to: "/faq", label: "FAQ" },
+  { to: "/quote", label: "Get a Quote" },
+  { to: "/contact", label: "Contact" },
 ];
 
 export default function Footer() {
   return (
-    <footer className="border-t border-sand-200 bg-sand-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
-          <div>
-            <div className="flex items-center gap-3 mb-5">
-              <img src={logo} alt="Noelson LLC logo" className="w-11 h-11 rounded-xl" />
-              <span className="flex flex-col leading-none">
-                <span className="text-ocean-900 font-extrabold text-lg">Noelson LLC</span>
-                <span className="text-gold-600 text-[10px] font-bold uppercase tracking-[0.16em] mt-1">
-                  Lawn & Landscaping
+    <footer className="bg-navy-950 text-navy-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
+          {/* Brand — wider column */}
+          <div className="md:col-span-4">
+            <Link to="/" className="flex items-center gap-3 mb-5">
+              <div className="w-12 h-12 rounded-xl copper-gradient flex items-center justify-center">
+                <Leaf className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex flex-col leading-none">
+                <span className="text-white font-bold text-lg tracking-tight">
+                  Petraslynn
                 </span>
-              </span>
-            </div>
-            <p className="text-sm text-sand-600 leading-relaxed mb-5">
-              Professional lawn care and landscaping for Palm Bay, FL and surrounding Brevard
-              County. Florida friendly, storm ready, and built for the Sunshine State.
+                <span className="text-copper-400 text-[10px] font-semibold tracking-[0.2em] uppercase">
+                  Lawn Care
+                </span>
+              </div>
+            </Link>
+            <p className="text-sm leading-relaxed mb-6 max-w-xs text-navy-300">
+              Professional lawn care and landscape management serving Aurora and
+              the greater Denver metro area. Reliable service, exceptional
+              results — every visit.
             </p>
-            <div className="flex items-center gap-1 mb-5">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-4 h-4 fill-gold-400 text-gold-400" />
-              ))}
-              <span className="ml-1 text-sm text-sand-500">5.0 from 8+ reviews</span>
-            </div>
-            <div className="flex items-center gap-3">
+            <div className="flex gap-3">
               <a
-                href={business.social.facebook}
-                className="w-9 h-9 rounded-xl bg-white border border-sand-200 flex items-center justify-center text-ocean-800 hover:text-white hover:bg-gold-500 hover:border-gold-500 transition-colors"
+                href="#"
+                className="w-10 h-10 rounded-lg bg-navy-800 hover:bg-copper-600 hover:text-white flex items-center justify-center transition-all duration-200"
                 aria-label="Facebook"
               >
-                <Facebook className="w-4 h-4" />
+                <Facebook className="w-5 h-5" />
               </a>
               <a
-                href={business.social.instagram}
-                className="w-9 h-9 rounded-xl bg-white border border-sand-200 flex items-center justify-center text-ocean-800 hover:text-white hover:bg-gold-500 hover:border-gold-500 transition-colors"
+                href="#"
+                className="w-10 h-10 rounded-lg bg-navy-800 hover:bg-copper-600 hover:text-white flex items-center justify-center transition-all duration-200"
                 aria-label="Instagram"
               >
-                <Instagram className="w-4 h-4" />
+                <Instagram className="w-5 h-5" />
               </a>
             </div>
           </div>
 
-          <div>
-            <h3 className="text-ocean-900 font-bold text-sm tracking-wider mb-5">Services</h3>
+          {/* Quick links */}
+          <div className="md:col-span-2">
+            <h3 className="text-white font-semibold mb-5 text-sm uppercase tracking-wider">
+              Explore
+            </h3>
             <ul className="space-y-3 text-sm">
-              {serviceLinks.map((label) => (
-                <li key={label}>
-                  <Link to="/services" className="text-sand-600 hover:text-gold-600 transition-colors">
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-ocean-900 font-bold text-sm tracking-wider mb-5">Company</h3>
-            <ul className="space-y-3 text-sm">
-              {companyLinks.map((link) => (
-                <li key={link.label}>
-                  <Link to={link.to} className="text-sand-600 hover:text-gold-600 transition-colors">
+              {quickLinks.map((link) => (
+                <li key={link.to}>
+                  <Link
+                    to={link.to}
+                    className="hover:text-copper-400 transition-colors"
+                  >
                     {link.label}
                   </Link>
                 </li>
@@ -82,44 +74,79 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div>
-            <h3 className="text-ocean-900 font-bold text-sm tracking-wider mb-5">Get in Touch</h3>
-            <ul className="space-y-3 text-sm">
+          {/* Contact */}
+          <div className="md:col-span-3">
+            <h3 className="text-white font-semibold mb-5 text-sm uppercase tracking-wider">
+              Get in Touch
+            </h3>
+            <ul className="space-y-4 text-sm">
               <li className="flex items-start gap-3">
-                <MapPin className="w-4 h-4 text-gold-600 flex-shrink-0 mt-0.5" />
-                <span className="text-sand-600">{business.address.full}</span>
+                <MapPin className="w-5 h-5 text-copper-400 flex-shrink-0 mt-0.5" />
+                <span>
+                  {site.address.street}
+                  <br />
+                  {site.address.city}, {site.address.state} {site.address.zip}
+                </span>
               </li>
               <li className="flex items-center gap-3">
-                <Phone className="w-4 h-4 text-gold-600 flex-shrink-0" />
-                <a href={`tel:${business.phoneRaw}`} className="text-sand-600 hover:text-gold-600 transition-colors">
-                  {business.phone}
+                <Phone className="w-5 h-5 text-copper-400 flex-shrink-0" />
+                <a
+                  href={`tel:${site.phoneRaw}`}
+                  className="hover:text-copper-400 transition-colors"
+                >
+                  {site.phone}
                 </a>
               </li>
               <li className="flex items-center gap-3">
-                <Mail className="w-4 h-4 text-gold-600 flex-shrink-0" />
-                <a href={`mailto:${business.email}`} className="text-sand-600 hover:text-gold-600 transition-colors break-all">
-                  {business.email}
+                <Mail className="w-5 h-5 text-copper-400 flex-shrink-0" />
+                <a
+                  href={`mailto:${site.email}`}
+                  className="hover:text-copper-400 transition-colors break-all"
+                >
+                  {site.email}
                 </a>
               </li>
-              <li className="flex items-start gap-3">
-                <Clock className="w-4 h-4 text-gold-600 flex-shrink-0 mt-0.5" />
-                <div className="text-sand-600">
-                  <p>Mon to Fri: 7:00 AM to 6:00 PM</p>
-                  <p>Saturday: 8:00 AM to 4:00 PM</p>
-                  <p>Sunday: Closed</p>
-                </div>
-              </li>
+            </ul>
+          </div>
+
+          {/* Hours */}
+          <div className="md:col-span-3">
+            <h3 className="text-white font-semibold mb-5 text-sm uppercase tracking-wider">
+              Business Hours
+            </h3>
+            <ul className="space-y-2.5 text-sm">
+              {site.hours.map((h) => (
+                <li
+                  key={h.day}
+                  className="flex items-center justify-between gap-2"
+                >
+                  <span className="flex items-center gap-2 text-navy-300">
+                    <Clock className="w-3.5 h-3.5 text-copper-400/50" />
+                    {h.day}
+                  </span>
+                  <span
+                    className={
+                      h.time === "Closed"
+                        ? "text-red-400 text-xs"
+                        : "text-navy-300 text-xs"
+                    }
+                  >
+                    {h.time}
+                  </span>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
       </div>
 
-      <div className="border-t border-sand-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-sm text-sand-500">
-            © {new Date().getFullYear()} Noelson LLC. All rights reserved.
+      {/* Bottom bar */}
+      <div className="border-t border-navy-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-navy-400">
+          <p>
+            &copy; {new Date().getFullYear()} {site.name}. All rights reserved.
           </p>
-          <p className="text-sm text-sand-500">Licensed & Insured in Florida</p>
+          <p>Licensed &amp; Insured | Serving the Denver Metro Area</p>
         </div>
       </div>
     </footer>

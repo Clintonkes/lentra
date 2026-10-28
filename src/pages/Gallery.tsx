@@ -1,39 +1,54 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowRight, X } from 'lucide-react';
-import HeroSection from '@/components/HeroSection';
-import { galleryItems } from '@/data/gallery';
-import { pageImages } from '@/config/images';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { ArrowRight, X, ZoomIn } from "lucide-react";
+import PageHeader from "@/components/PageHeader";
+import { galleryImages } from "@/config/site";
+
+const heroImage =
+  "https://images.pexels.com/photos/280222/pexels-photo-280222.jpeg?auto=compress&cs=tinysrgb&w=1600";
+const categories = ["All", "Mowing", "Trimming", "Cleanup", "Irrigation", "Design", "Full Service"];
 
 export default function Gallery() {
-  const [filter, setFilter] = useState('All');
-  const [lightbox, setLightbox] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [lightbox, setLightbox] = useState<number | null>(null);
 
-  const categories = ['All', ...Array.from(new Set(galleryItems.map((item) => item.category)))];
   const filtered =
-    filter === 'All' ? galleryItems : galleryItems.filter((item) => item.category === filter);
+    activeCategory === "All"
+      ? galleryImages
+      : galleryImages.filter((img) => img.category === activeCategory);
+
+  const openLightbox = (index: number) => setLightbox(index);
+  const closeLightbox = () => setLightbox(null);
+  const nextImage = () =>
+    setLightbox((prev) =>
+      prev !== null ? (prev + 1) % filtered.length : null,
+    );
+  const prevImage = () =>
+    setLightbox((prev) =>
+      prev !== null ? (prev - 1 + filtered.length) % filtered.length : null,
+    );
 
   return (
     <div>
-      <HeroSection
-        badge="Project Gallery"
-        title="Our Florida Work"
-        subtitle="Browse a selection of our lawn care, landscaping, and maintenance projects across Brevard County."
-        image={pageImages.gallery.header}
+      <PageHeader
+        title="Our Work"
+        subtitle="See the quality of our lawn care and landscape management in action."
+        breadcrumb="Gallery"
+        image={heroImage}
       />
 
-      <section className="py-20 bg-sand-50">
+      <section className="py-24 bg-navy-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Filters */}
-          <div className="flex flex-wrap justify-center gap-2 mb-10">
+          <div className="flex flex-wrap justify-center gap-2 mb-12">
             {categories.map((cat) => (
               <button
                 key={cat}
-                onClick={() => setFilter(cat)}
-                className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${
-                  filter === cat
-                    ? 'bg-ocean-800 text-white'
-                    : 'bg-white border border-sand-200 text-sand-600 hover:border-gold-400 hover:text-gold-500'
+                onClick={() => setActiveCategory(cat)}
+                className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                  activeCategory === cat
+                    ? "copper-gradient text-white shadow-md"
+                    : "bg-white text-navy-600 hover:bg-navy-100 border border-navy-200"
                 }`}
               >
                 {cat}
@@ -41,65 +56,102 @@ export default function Gallery() {
             ))}
           </div>
 
-          {/* Grid */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => setLightbox(item.image)}
-                className="group relative rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow aspect-[4/3]"
+          {/* Masonry-style grid */}
+          <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 [&>*]:mb-6">
+            {filtered.map((img, index) => (
+              <div
+                key={`${img.url}-${index}`}
+                className="group relative rounded-xl overflow-hidden shadow-sm cursor-pointer break-inside-avoid"
+                onClick={() => openLightbox(index)}
               >
                 <img
-                  src={item.image}
-                  alt={item.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  src={img.url}
+                  alt={img.caption}
+                  className="w-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-ocean-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="absolute bottom-0 left-0 right-0 p-5 text-left translate-y-2 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                  <span className="inline-block px-2.5 py-1 rounded-lg bg-gold-500 text-white text-xs font-bold mb-2">
-                    {item.category}
-                  </span>
-                  <h3 className="text-white font-bold text-lg">{item.title}</h3>
+                <div className="absolute inset-0 bg-gradient-to-t from-navy-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-5">
+                  <div>
+                    <span className="inline-block copper-gradient text-white text-xs font-semibold px-2.5 py-1 rounded-md mb-2">
+                      {img.category}
+                    </span>
+                    <p className="text-white text-sm font-medium">
+                      {img.caption}
+                    </p>
+                  </div>
                 </div>
-              </button>
+                <div className="absolute top-4 right-4 w-10 h-10 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <ZoomIn className="w-5 h-5 text-white" />
+                </div>
+              </div>
             ))}
-          </div>
-
-          {/* CTA */}
-          <div className="text-center mt-16">
-            <p className="text-sand-600 mb-6 text-lg">
-              Want results like these for your property? Let's talk.
-            </p>
-            <Link
-              to="/quote"
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-gold-500 text-white font-bold hover:bg-gold-400 transition-colors"
-            >
-              Start Your Project
-              <ArrowRight className="w-5 h-5" />
-            </Link>
           </div>
         </div>
       </section>
 
       {/* Lightbox */}
-      {lightbox && (
+      {lightbox !== null && (
         <div
-          className="fixed inset-0 z-[60] bg-ocean-950/90 flex items-center justify-center p-4"
-          onClick={() => setLightbox(null)}
+          className="fixed inset-0 z-50 bg-navy-950/95 flex items-center justify-center p-4"
+          onClick={closeLightbox}
         >
           <button
-            className="absolute top-6 right-6 w-12 h-12 rounded-full bg-ocean-800 text-white flex items-center justify-center hover:bg-ocean-700 transition-colors"
-            onClick={() => setLightbox(null)}
+            className="absolute top-6 right-6 text-white p-2 hover:text-copper-400 transition-colors"
+            aria-label="Close"
+            onClick={closeLightbox}
           >
-            <X className="w-6 h-6" />
+            <X className="w-8 h-8" />
           </button>
-          <img
-            src={lightbox}
-            alt="Gallery full view"
-            className="max-w-full max-h-[85vh] rounded-2xl object-contain"
-          />
+          <button
+            className="absolute left-4 md:left-8 text-white p-2 hover:text-copper-400 transition-colors text-3xl"
+            onClick={(e) => {
+              e.stopPropagation();
+              prevImage();
+            }}
+            aria-label="Previous"
+          >
+            &#8592;
+          </button>
+          <button
+            className="absolute right-4 md:right-8 text-white p-2 hover:text-copper-400 transition-colors text-3xl"
+            onClick={(e) => {
+              e.stopPropagation();
+              nextImage();
+            }}
+            aria-label="Next"
+          >
+            &#8594;
+          </button>
+          <div className="max-w-4xl" onClick={(e) => e.stopPropagation()}>
+            <img
+              src={filtered[lightbox].url}
+              alt={filtered[lightbox].caption}
+              className="max-w-full max-h-[80vh] rounded-lg shadow-2xl mx-auto"
+            />
+            <p className="text-white text-center mt-4 text-sm font-medium">
+              {filtered[lightbox].caption}
+            </p>
+          </div>
         </div>
       )}
+
+      {/* CTA — navy */}
+      <section className="py-16 navy-gradient">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <h2 className="text-3xl font-extrabold text-white mb-4">
+            Want Results Like These?
+          </h2>
+          <p className="text-navy-200 mb-8">
+            Let us bring the same quality care to your property. Get a free quote
+            today.
+          </p>
+          <Link
+            to="/quote"
+            className="inline-flex items-center gap-2 copper-gradient hover:opacity-90 text-white font-semibold px-8 py-4 rounded-lg transition-all duration-200 shadow-lg"
+          >
+            Get Your Free Quote <ArrowRight className="w-5 h-5" />
+          </Link>
+        </div>
+      </section>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: noelson-backend
+    name: petraslynn-backend
     runtime: docker
     dockerfilePath: ./Dockerfile
     healthCheckPath: /api/health

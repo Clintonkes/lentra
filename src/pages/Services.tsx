@@ -1,68 +1,146 @@
-import { Link } from 'react-router-dom';
-import { Check, ArrowRight, Phone, Sprout } from 'lucide-react';
-import HeroSection from '@/components/HeroSection';
-import { services } from '@/data/services';
-import { business } from '@/data/business';
-import { pageImages } from '@/config/images';
+import { Link } from "react-router-dom";
+import {
+  Scissors, Sparkles, Droplets, Leaf, Trees, Shovel,
+  Check, ArrowRight, Phone, ChevronDown,
+} from "lucide-react";
+import { useState } from "react";
+import PageHeader from "@/components/PageHeader";
+import { site, services } from "@/config/site";
+
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  Scissors, Sparkles, Leaf, Droplets, Trees, Shovel,
+};
+
+const heroImage =
+  "https://images.pexels.com/photos/38936349/pexels-photo-38936349.jpeg?auto=compress&cs=tinysrgb&w=1600";
 
 export default function Services() {
+  const [openIndex, setOpenIndex] = useState(0);
+
   return (
     <div>
-      <HeroSection
-        badge="Our Services"
-        title="Complete Lawn Care Services"
-        subtitle="From weekly mowing to full landscape design, we handle everything your Florida property needs to look its best."
-        image={pageImages.services.header}
+      <PageHeader
+        title="Our Services"
+        subtitle="Full-service lawn care and landscape management designed for Colorado's Front Range."
+        breadcrumb="Services"
+        image={heroImage}
       />
 
-      {/* Services - Alternating Layout */}
-      <section className="py-24 bg-sand-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="space-y-20">
+      {/* Accordion-style service list with image thumbnails */}
+      <section className="py-24 bg-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <span className="text-copper-600 font-bold text-sm uppercase tracking-widest">
+              Complete Lawn Care
+            </span>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-navy-900 mt-2 mb-4">
+              Everything Your Property Needs
+            </h2>
+            <p className="text-navy-600 max-w-2xl mx-auto">
+              Click any service below to see the details. All services are
+              available as one-time visits or recurring plans.
+            </p>
+          </div>
+
+          <div className="space-y-4">
             {services.map((service, index) => {
-              const Icon = service.icon;
-              const reversed = index % 2 === 1;
+              const Icon = iconMap[service.icon] || Leaf;
+              const isOpen = openIndex === index;
               return (
-                <div key={service.id} className="grid lg:grid-cols-2 gap-12 items-center">
-                  <div className={reversed ? 'lg:order-2' : ''}>
-                    <div className="rounded-3xl overflow-hidden shadow-xl shadow-ocean-900/10">
-                      <img
-                        src={service.image}
-                        alt={service.title}
-                        className="w-full h-[360px] object-cover"
+                <div
+                  key={service.slug}
+                  className={`rounded-2xl border transition-all duration-300 overflow-hidden ${
+                    isOpen
+                      ? "border-copper-300 shadow-lg"
+                      : "border-navy-100 hover:border-navy-200"
+                  }`}
+                >
+                  <button
+                    onClick={() => setOpenIndex(isOpen ? -1 : index)}
+                    className="w-full flex items-center gap-4 p-5 text-left"
+                  >
+                    <div
+                      className={`w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
+                        isOpen
+                          ? "copper-gradient"
+                          : "bg-navy-50"
+                      }`}
+                    >
+                      <Icon
+                        className={`w-7 h-7 ${
+                          isOpen ? "text-white" : "text-navy-700"
+                        }`}
                       />
                     </div>
-                  </div>
-                  <div className={reversed ? 'lg:order-1' : ''}>
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-12 h-12 rounded-2xl bg-gold-500 flex items-center justify-center">
-                        <Icon className="w-6 h-6 text-white" strokeWidth={2} />
-                      </div>
-                      <span className="text-gold-500 font-bold text-sm uppercase tracking-wider">
-                        Service {String(index + 1).padStart(2, '0')}
-                      </span>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-lg text-navy-900">
+                        {service.title}
+                      </h3>
+                      <p className="text-navy-500 text-sm mt-0.5 truncate">
+                        {service.short}
+                      </p>
                     </div>
-                    <h2 className="text-2xl lg:text-3xl font-extrabold text-ocean-900 mb-4">
-                      {service.title}
-                    </h2>
-                    <p className="text-sand-600 leading-relaxed mb-6">{service.description}</p>
-                    <ul className="grid sm:grid-cols-2 gap-3 mb-8">
-                      {service.features.map((feature) => (
-                        <li key={feature} className="flex items-center gap-2">
-                          <div className="w-5 h-5 rounded-full bg-gold-100 flex items-center justify-center flex-shrink-0">
-                            <Check className="w-3 h-3 text-gold-600" strokeWidth={3} />
-                          </div>
-                          <span className="text-sm text-sand-700">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <Link
-                      to="/quote"
-                      className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-ocean-800 text-white font-bold hover:bg-ocean-700 transition-colors"
+                    <div
+                      className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
+                        isOpen
+                          ? "bg-copper-100 text-copper-600 rotate-180"
+                          : "bg-navy-50 text-navy-400"
+                      }`}
                     >
-                      Get a Quote
-                      <ArrowRight className="w-4 h-4" />
-                    </Link>
+                      <ChevronDown className="w-5 h-5" />
+                    </div>
+                  </button>
+                  <div
+                    className={`grid transition-all duration-300 ${
+                      isOpen
+                        ? "grid-rows-[1fr] opacity-100"
+                        : "grid-rows-[0fr] opacity-0"
+                    }`}
+                  >
+                    <div className="overflow-hidden">
+                      <div className="px-5 pb-6">
+                        <div className="border-t border-navy-100 pt-5">
+                          <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+                            <div className="md:col-span-2">
+                              <div className="rounded-xl overflow-hidden h-44">
+                                <img
+                                  src={service.image}
+                                  alt={service.title}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                            </div>
+                            <div className="md:col-span-3">
+                              <p className="text-navy-600 text-sm leading-relaxed mb-4">
+                                {service.description}
+                              </p>
+                              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
+                                {service.features.map((feature) => (
+                                  <li
+                                    key={feature}
+                                    className="flex items-start gap-2"
+                                  >
+                                    <div className="w-5 h-5 rounded-full bg-copper-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                      <Check className="w-3.5 h-3.5 text-copper-600" />
+                                    </div>
+                                    <span className="text-navy-700 text-sm">
+                                      {feature}
+                                    </span>
+                                  </li>
+                                ))}
+                              </ul>
+                              <Link
+                                to="/quote"
+                                className="inline-flex items-center gap-2 text-copper-600 font-semibold text-sm hover:gap-3 transition-all"
+                              >
+                                Request This Service
+                                <ArrowRight className="w-4 h-4" />
+                              </Link>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               );
@@ -71,33 +149,37 @@ export default function Services() {
         </div>
       </section>
 
-      {/* Process */}
-      <section className="py-24 bg-ocean-900">
+      {/* Process — horizontal timeline on navy */}
+      <section className="py-24 navy-gradient">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="text-gold-400 font-bold text-sm uppercase tracking-wider">
-              How It Works
+          <div className="text-center mb-14">
+            <span className="text-copper-400 font-bold text-sm uppercase tracking-widest">
+              Getting Started
             </span>
-            <h2 className="text-3xl lg:text-4xl font-extrabold text-white mt-3 mb-4">
-              Simple 4-Step Process
+            <h2 className="text-3xl md:text-4xl font-extrabold text-white mt-2 mb-4">
+              How to Get Service
             </h2>
-            <p className="text-sand-400">
-              Getting started is easy. We make the whole process smooth from your first call to a
-              beautiful lawn.
-            </p>
           </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {[
-              { step: '1', title: 'Contact Us', desc: 'Call or request a quote online. Tell us about your property.' },
-              { step: '2', title: 'Free Estimate', desc: 'We assess your property and provide a detailed quote.' },
-              { step: '3', title: 'Schedule', desc: 'Choose a plan and schedule that works for you.' },
-              { step: '4', title: 'Enjoy', desc: 'Sit back and enjoy a beautiful, well maintained yard.' },
+              { step: "01", title: "Reach Out", text: "Call us or fill out the quote form with your property details." },
+              { step: "02", title: "Free Estimate", text: "We assess your yard and provide a clear, upfront price." },
+              { step: "03", title: "Pick a Plan", text: "Choose a service plan and schedule that works for you." },
+              { step: "04", title: "We Get to Work", text: "Our crew takes care of everything. You enjoy the results." },
             ].map((item) => (
-              <div key={item.step} className="rounded-2xl bg-ocean-800 border border-ocean-700 p-6">
-                <div className="text-4xl font-extrabold text-gold-400/30 mb-3">{item.step}</div>
-                <h3 className="text-white font-bold text-lg mb-2">{item.title}</h3>
-                <p className="text-sm text-sand-400 leading-relaxed">{item.desc}</p>
+              <div
+                key={item.step}
+                className="relative bg-navy-800/60 rounded-2xl p-6 border border-navy-700"
+              >
+                <div className="text-5xl font-extrabold copper-text mb-3">
+                  {item.step}
+                </div>
+                <h3 className="font-bold text-white text-lg mb-2">
+                  {item.title}
+                </h3>
+                <p className="text-navy-300 text-sm leading-relaxed">
+                  {item.text}
+                </p>
               </div>
             ))}
           </div>
@@ -105,32 +187,26 @@ export default function Services() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 bg-sand-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-lg bg-gold-50 text-gold-600 text-sm font-bold mb-4">
-            <Sprout className="w-4 h-4" />
-            Need Something Custom?
-          </div>
-          <h2 className="text-3xl font-extrabold text-ocean-900 mb-4">
-            We Build Custom Service Plans
+      <section className="py-16 copper-gradient">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <h2 className="text-3xl font-extrabold text-white mb-4">
+            Ready to Get Started?
           </h2>
-          <p className="text-sand-600 mb-8 text-lg">
-            Every Florida property is unique. Call us and we'll create a plan that fits your yard,
-            your budget, and your schedule.
+          <p className="text-white/90 mb-8">
+            Get your free quote today and see the Petraslynn difference.
           </p>
-          <div className="flex flex-wrap justify-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               to="/quote"
-              className="px-7 py-3.5 rounded-xl bg-gold-500 text-white font-bold hover:bg-gold-400 transition-colors"
+              className="bg-navy-900 hover:bg-navy-800 text-white font-semibold px-8 py-4 rounded-lg transition-all duration-200 flex items-center gap-2"
             >
-              Request a Custom Quote
+              Get a Free Quote <ArrowRight className="w-5 h-5" />
             </Link>
             <a
-              href={`tel:${business.phoneRaw}`}
-              className="px-7 py-3.5 rounded-xl border-2 border-ocean-700 text-ocean-800 font-bold hover:bg-ocean-50 transition-colors flex items-center gap-2"
+              href={`tel:${site.phoneRaw}`}
+              className="bg-white/20 hover:bg-white/30 text-white font-semibold px-8 py-4 rounded-lg transition-all duration-200 flex items-center gap-2"
             >
-              <Phone className="w-5 h-5" />
-              {business.phone}
+              <Phone className="w-5 h-5" /> {site.phone}
             </a>
           </div>
         </div>

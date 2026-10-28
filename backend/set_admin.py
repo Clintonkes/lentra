@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Set or update the admin login credentials for Noelson LLC.
+Set or update the admin login credentials for Petraslynn LLC.
 
 Usage:
     python backend/set_admin.py <email> <password>
 
 Examples:
-    python backend/set_admin.py admin@noelsonllc.com mypassword123
+    python backend/set_admin.py admin@example.com mypassword123
     python backend/set_admin.py newemail@example.com newpassword
 """
 
@@ -34,7 +34,7 @@ def describe_target(url: str) -> str:
 def main():
     if len(sys.argv) != 3:
         print("Usage: python set_admin.py <email> <password>")
-        print("Example: python set_admin.py admin@noelsonllc.com mypassword123")
+        print("Example: python set_admin.py admin@example.com mypassword123")
         sys.exit(1)
 
     email = sys.argv[1].strip()
@@ -48,7 +48,7 @@ def main():
         print("Error: Password must be at least 6 characters.")
         sys.exit(1)
 
-    db_url = os.getenv("DATABASE_URL", "sqlite:///./noelson.db")
+    db_url = os.getenv("DATABASE_URL", "sqlite:///./petraslynn.db")
     print(f"Target: {describe_target(db_url)}")
     if db_url.startswith("sqlite"):
         print(

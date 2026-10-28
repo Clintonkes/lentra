@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from datetime import datetime, timezone
@@ -15,11 +15,13 @@ from schemas import (
 )
 from auth import verify_password, get_password_hash, create_access_token, get_current_admin
 from email_service import (
-    send_email, booking_confirmation_html, booking_status_html,
-    contact_confirmation_html, contact_admin_notification_html,
+    send_email, booking_confirmation_html, booking_admin_notification_html,
+    booking_status_html, contact_confirmation_html, contact_admin_notification_html,
 )
 
-app = FastAPI(title="Noelson LLC API", version="1.0.0")
+app = FastAPI(title="Petraslynn LLC API", version="1.0.0")
+
+DEFAULT_ADMIN_EMAIL = "petraslynn@proton.me"
 
 origins = [
     "http://localhost:5173",
@@ -27,18 +29,16 @@ origins = [
     "http://localhost:4028",
     "http://127.0.0.1:5173",
     "http://127.0.0.1:4028",
-    # GitHub Pages default URL (the site is served from /noelson there; an
+    # GitHub Pages default URL (the site is served from /<repo> there; an
     # origin has no path, so this one entry covers it).
     "https://clintonkes.github.io",
-    # Custom live domain (noelsonlawncare.com).
-    "https://noelsonlawncare.com",
-    "https://www.noelsonlawncare.com",
 ]
 render_url = os.getenv("RENDER_EXTERNAL_URL")
 if render_url:
     origins.append(render_url)
-# Extra allowed origins, comma-separated — lets a new custom domain be
-# allowed from the hosting dashboard without a code change.
+# Extra allowed origins, comma-separated — set this on Render to the custom
+# domain once it is live (e.g. https://example.com,https://www.example.com),
+# no code change needed.
 origins.extend(
     o.strip().rstrip("/") for o in os.getenv("CORS_ORIGINS", "").split(",") if o.strip()
 )
@@ -67,7 +67,7 @@ def _seed_admin():
         # guessable default.
         return
 
-    admin_email = os.getenv("ADMIN_EMAIL", "noelsonllcs@proton.me")
+    admin_email = os.getenv("ADMIN_EMAIL", DEFAULT_ADMIN_EMAIL)
     db = SessionLocal()
     try:
         existing = db.query(Admin).first()
@@ -87,7 +87,7 @@ def _seed_admin():
 def _generate_reference():
     ts = str(int(time.time()))[-6:]
     rand = "".join(random.choices(string.digits, k=3))
-    return f"NL-{ts}{rand}"
+    return f"PL-{ts}{rand}"
 
 
 # ── Public Endpoints ──────────────────────────────────────────────
@@ -98,7 +98,7 @@ def health():
 
 
 @app.post("/api/bookings", response_model=BookingResponse, status_code=201)
-def create_booking(data: BookingCreate, db: Session = Depends(get_db)):
+def create_booking(data: BookingCreate, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     reference = _generate_reference()
     booking = Booking(
         reference=reference,
@@ -118,9 +118,12 @@ def create_booking(data: BookingCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(booking)
 
-    send_email(
+    # Emails go out after the response so the customer isn't kept waiting
+    # on the mail provider.
+    background_tasks.add_task(
+        send_email,
         to_email=data.email,
-        subject=f"Your Noelson Service Request {reference}",
+        subject=f"Your Petraslynn Quote Request {reference}",
         html_body=booking_confirmation_html(
             name=data.name,
             reference=reference,
@@ -131,12 +134,19 @@ def create_booking(data: BookingCreate, db: Session = Depends(get_db)):
             preferred_time=data.preferred_time,
         ),
     )
+    background_tasks.add_task(
+        send_email,
+        to_email=os.getenv("ADMIN_EMAIL", DEFAULT_ADMIN_EMAIL),
+        subject=f"New Quote Request {reference}: {data.service or 'Service TBD'}",
+        html_body=booking_admin_notification_html(booking),
+        reply_to=data.email,
+    )
 
     return booking
 
 
 @app.post("/api/contacts", response_model=ContactResponse, status_code=201)
-def create_contact(data: ContactCreate, db: Session = Depends(get_db)):
+def create_contact(data: ContactCreate, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     contact = Contact(
         name=data.name,
         email=data.email,
@@ -149,9 +159,10 @@ def create_contact(data: ContactCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(contact)
 
-    send_email(
+    background_tasks.add_task(
+        send_email,
         to_email=data.email,
-        subject="Thank you for contacting Noelson LLC",
+        subject="Thank you for contacting Petraslynn LLC",
         html_body=contact_confirmation_html(
             name=data.name,
             subject=data.subject,
@@ -159,16 +170,18 @@ def create_contact(data: ContactCreate, db: Session = Depends(get_db)):
         ),
     )
 
-    admin_email = os.getenv("ADMIN_EMAIL", "noelsonllcs@proton.me")
-    send_email(
-        to_email=admin_email,
+    background_tasks.add_task(
+        send_email,
+        to_email=os.getenv("ADMIN_EMAIL", DEFAULT_ADMIN_EMAIL),
         subject=f"New Contact: {data.subject or 'No subject'}",
         html_body=contact_admin_notification_html(
             name=data.name,
             email=data.email,
             subject=data.subject,
             message=data.message,
+            phone=data.phone,
         ),
+        reply_to=data.email,
     )
 
     return contact
@@ -202,6 +215,7 @@ def list_bookings(
 def update_booking_status(
     booking_id: int,
     data: BookingStatusUpdate,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     admin: Admin = Depends(get_current_admin),
 ):
@@ -217,9 +231,10 @@ def update_booking_status(
     db.commit()
     db.refresh(booking)
 
-    send_email(
+    background_tasks.add_task(
+        send_email,
         to_email=booking.email,
-        subject=f"Noelson Service Update: {booking.reference}",
+        subject=f"Petraslynn Service Update: {booking.reference}",
         html_body=booking_status_html(
             name=booking.name,
             reference=booking.reference,

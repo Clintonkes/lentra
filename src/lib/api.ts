@@ -1,4 +1,9 @@
-const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:8000').replace(/\/$/, '');
+// Set at build time: .env for local dev, the GitHub repo variable
+// VITE_API_URL for the deployed site (the workflow refuses to build without
+// it). The localhost fallback only applies to `npm run dev`.
+const API_URL = (
+  import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:8000' : '')
+).replace(/\/$/, '');
 
 async function post<T>(path: string, body: unknown): Promise<T> {
   let res: Response;
@@ -22,9 +27,15 @@ async function post<T>(path: string, body: unknown): Promise<T> {
       .json()
       .then((data) => data?.detail)
       .catch(() => null);
-    throw new Error(
-      typeof detail === 'string' ? detail : 'Something went wrong. Please try again.'
-    );
+    // FastAPI validation errors (422) arrive as a list of field errors;
+    // show the first one, e.g. "value is not a valid email address: ...".
+    const message =
+      typeof detail === 'string'
+        ? detail
+        : Array.isArray(detail) && typeof detail[0]?.msg === 'string'
+          ? detail[0].msg.replace(/^Value error, /, '')
+          : 'Something went wrong. Please try again.';
+    throw new Error(message);
   }
 
   return res.json() as Promise<T>;
