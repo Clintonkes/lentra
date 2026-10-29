@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Set or update the admin login credentials for Petraslynn LLC.
+Set or update the admin login credentials for Lentra LLC.
 
 Usage:
     python backend/set_admin.py <email> <password>

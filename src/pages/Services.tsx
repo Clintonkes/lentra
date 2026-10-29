@@ -1,216 +1,98 @@
 import { Link } from "react-router-dom";
-import {
-  Scissors, Sparkles, Droplets, Leaf, Trees, Shovel,
-  Check, ArrowRight, Phone, ChevronDown,
-} from "lucide-react";
-import { useState } from "react";
+import { ArrowRight, Check } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
-import { site, services } from "@/config/site";
+import Photo from "@/components/Photo";
+import SectionHeading from "@/components/SectionHeading";
+import CtaBand from "@/components/CtaBand";
+import { serviceIcons } from "@/components/icons";
+import { SIZES, pageImages } from "@/config/images";
+import { services } from "@/config/site";
 
-const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-  Scissors, Sparkles, Leaf, Droplets, Trees, Shovel,
-};
-
-const heroImage =
-  "https://images.pexels.com/photos/38936349/pexels-photo-38936349.jpeg?auto=compress&cs=tinysrgb&w=1600";
+const steps = [
+  { title: "Reach out", text: "Call us or fill out the quote form online." },
+  { title: "Free estimate", text: "We assess your property and send a custom quote." },
+  { title: "Schedule", text: "Pick a time that works and we add you to the route." },
+  { title: "Relax", text: "We handle the rest while your lawn stays beautiful." },
+];
 
 export default function Services() {
-  const [openIndex, setOpenIndex] = useState(0);
-
   return (
-    <div>
+    <>
       <PageHeader
-        title="Our Services"
-        subtitle="Complete lawn care and landscape management designed for Colorado's Front Range."
-        breadcrumb="Services"
-        image={heroImage}
+        eyebrow="Services"
+        title="Everything your yard needs, from one team"
+        subtitle="Lawn care and landscaping tailored to South Texas grass, soil and seasons, so your property looks its best all year."
+        image={pageImages.services.hero}
       />
 
-      {/* Accordion-style service list with image thumbnails */}
-      <section className="py-24 bg-white">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <span className="text-gold-600 font-bold text-sm uppercase tracking-widest">
-              Complete Lawn Care
-            </span>
-            <h2 className="text-3xl md:text-4xl font-semibold text-pine-900 mt-2 mb-4">
-              Everything Your Property Needs
-            </h2>
-            <p className="text-pine-600 max-w-2xl mx-auto">
-              Click any service below to see the details. All services are
-              available as single visits or recurring plans.
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            {services.map((service, index) => {
-              const Icon = iconMap[service.icon] || Leaf;
-              const isOpen = openIndex === index;
-              return (
-                <div
-                  key={service.slug}
-                  className={`rounded-2xl border transition-all duration-300 overflow-hidden ${
-                    isOpen
-                      ? "border-gold-300 shadow-lg"
-                      : "border-pine-100 hover:border-pine-200"
-                  }`}
-                >
-                  <button
-                    onClick={() => setOpenIndex(isOpen ? -1 : index)}
-                    className="w-full flex items-center gap-4 p-5 text-left"
-                  >
-                    <div
-                      className={`w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
-                        isOpen
-                          ? "gold-gradient"
-                          : "bg-pine-50"
-                      }`}
-                    >
-                      <Icon
-                        className={`w-7 h-7 ${
-                          isOpen ? "text-white" : "text-pine-700"
-                        }`}
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-lg text-pine-900">
-                        {service.title}
-                      </h3>
-                      <p className="text-pine-500 text-sm mt-0.5 truncate">
-                        {service.short}
-                      </p>
-                    </div>
-                    <div
-                      className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
-                        isOpen
-                          ? "bg-gold-100 text-gold-600 rotate-180"
-                          : "bg-pine-50 text-pine-400"
-                      }`}
-                    >
-                      <ChevronDown className="w-5 h-5" />
-                    </div>
-                  </button>
-                  <div
-                    className={`grid transition-all duration-300 ${
-                      isOpen
-                        ? "grid-rows-[1fr] opacity-100"
-                        : "grid-rows-[0fr] opacity-0"
-                    }`}
-                  >
-                    <div className="overflow-hidden">
-                      <div className="px-5 pb-6">
-                        <div className="border-t border-pine-100 pt-5">
-                          <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-                            <div className="md:col-span-2">
-                              <div className="rounded-xl overflow-hidden h-44">
-                                <img
-                                  src={service.image}
-                                  alt={service.title}
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-                            </div>
-                            <div className="md:col-span-3">
-                              <p className="text-pine-600 text-sm leading-relaxed mb-4">
-                                {service.description}
-                              </p>
-                              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
-                                {service.features.map((feature) => (
-                                  <li
-                                    key={feature}
-                                    className="flex items-start gap-2"
-                                  >
-                                    <div className="w-5 h-5 rounded-full bg-gold-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                      <Check className="w-3.5 h-3.5 text-gold-600" />
-                                    </div>
-                                    <span className="text-pine-700 text-sm">
-                                      {feature}
-                                    </span>
-                                  </li>
-                                ))}
-                              </ul>
-                              <Link
-                                to="/quote"
-                                className="inline-flex items-center gap-2 text-gold-600 font-semibold text-sm hover:gap-3 transition-all"
-                              >
-                                Request This Service
-                                <ArrowRight className="w-4 h-4" />
-                              </Link>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+      <section className="section">
+        <div className="container-max space-y-24 md:space-y-32">
+          {services.map((service, index) => {
+            const Icon = serviceIcons[service.icon];
+            const flip = index % 2 === 1;
+            return (
+              <article key={service.slug} id={service.slug} className="grid scroll-mt-28 items-center gap-10 lg:grid-cols-2 lg:gap-20">
+                <div className={`relative ${flip ? "lg:order-2" : ""}`}>
+                  <div className="overflow-hidden rounded-[2rem] bg-evergreen-100 shadow-lift">
+                    <Photo src={service.image} sizes={SIZES.half} alt={service.title} className="aspect-[4/3] w-full object-cover" />
+                  </div>
+                  <span className="absolute -top-4 left-6 rounded-full bg-clay-600 px-4 py-1.5 font-display text-sm font-semibold text-white shadow-lift">
+                    0{index + 1}
+                  </span>
+                </div>
+                <div>
+                  <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-evergreen-900 text-white">
+                    <Icon className="h-7 w-7" />
+                  </span>
+                  <h2 className="mt-6 text-3xl font-bold md:text-4xl">{service.title}</h2>
+                  <p className="mt-4 text-lg leading-relaxed text-sand-700">{service.description}</p>
+                  <ul className="mt-7 grid gap-3 sm:grid-cols-2">
+                    {service.features.map((f) => (
+                      <li key={f} className="flex items-center gap-3 text-sand-800">
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-evergreen-50 text-evergreen-700">
+                          <Check className="h-3.5 w-3.5" />
+                        </span>
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-9 flex flex-wrap items-center gap-6">
+                    <Link to={`/quote?service=${service.slug}`} className="btn-primary">
+                      Request this service <ArrowRight className="h-4 w-4" />
+                    </Link>
+                    <span className="font-display text-lg font-semibold text-clay-700">{service.price}</span>
                   </div>
                 </div>
-              );
-            })}
-          </div>
+              </article>
+            );
+          })}
         </div>
       </section>
 
-      {/* Process — horizontal timeline on navy */}
-      <section className="py-24 pine-gradient">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <span className="text-gold-400 font-bold text-sm uppercase tracking-widest">
-              Getting Started
-            </span>
-            <h2 className="text-3xl md:text-4xl font-semibold text-white mt-2 mb-4">
-              How to Get Service
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            {[
-              { step: "01", title: "Reach Out", text: "Call us or fill out the quote form with your property details." },
-              { step: "02", title: "Free Estimate", text: "We assess your yard and provide a clear, upfront price." },
-              { step: "03", title: "Pick a Plan", text: "Choose a service plan and schedule that works for you." },
-              { step: "04", title: "We Get to Work", text: "Our crew takes care of everything. You enjoy the results." },
-            ].map((item) => (
-              <div
-                key={item.step}
-                className="relative bg-pine-800/60 rounded-2xl p-6 border border-pine-700"
-              >
-                <div className="text-5xl font-semibold gold-text mb-3">
-                  {item.step}
-                </div>
-                <h3 className="font-bold text-white text-lg mb-2">
-                  {item.title}
-                </h3>
-                <p className="text-pine-300 text-sm leading-relaxed">
-                  {item.text}
-                </p>
-              </div>
+      <section className="section bg-white">
+        <div className="container-max">
+          <SectionHeading center eyebrow="Getting started" title="Simple process, outstanding results" />
+          <ol className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {steps.map((s, i) => (
+              <li key={s.title} className="card p-7">
+                <span className="flex h-11 w-11 items-center justify-center rounded-full bg-clay-600 font-display font-bold text-white">{i + 1}</span>
+                <h3 className="mt-5 text-lg font-semibold">{s.title}</h3>
+                <p className="mt-1.5 text-sm leading-relaxed text-sand-700">{s.text}</p>
+              </li>
             ))}
-          </div>
+          </ol>
+          <p className="mt-12 text-center text-sand-700">
+            Have a question first?{" "}
+            <Link to="/faq" className="font-semibold text-evergreen-800 underline decoration-clay-400 underline-offset-4 hover:text-clay-700">
+              Read our FAQ
+            </Link>
+          </p>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-16 gold-gradient">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-semibold text-white mb-4">
-            Ready to Get Started?
-          </h2>
-          <p className="text-white/90 mb-8">
-            Get your free quote today and see the Petraslynn difference.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              to="/quote"
-              className="bg-pine-900 hover:bg-pine-800 text-white font-semibold px-8 py-4 rounded-lg transition-all duration-200 flex items-center gap-2"
-            >
-              Get a Free Quote <ArrowRight className="w-5 h-5" />
-            </Link>
-            <a
-              href={`tel:${site.phoneRaw}`}
-              className="bg-white/20 hover:bg-white/30 text-white font-semibold px-8 py-4 rounded-lg transition-all duration-200 flex items-center gap-2"
-            >
-              <Phone className="w-5 h-5" /> {site.phone}
-            </a>
-          </div>
-        </div>
-      </section>
-    </div>
+      <div className="pt-20 md:pt-28">
+        <CtaBand />
+      </div>
+    </>
   );
 }

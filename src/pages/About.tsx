@@ -1,261 +1,160 @@
 import { Link } from "react-router-dom";
-import {
-  Heart, ShieldCheck, Sparkles, Users, ArrowRight, Phone, MapPin,
-  CheckCircle2, Award, Truck, Clock, Leaf,
-} from "lucide-react";
+import { ArrowRight, Check, Eye, Heart, Leaf, MapPin, ShieldCheck, Target, Users } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
-import { site } from "@/config/site";
-
-const heroImage =
-  "https://images.pexels.com/photos/2604622/pexels-photo-2604622.jpeg?auto=compress&cs=tinysrgb&w=1600";
-const teamImage =
-  "https://images.pexels.com/photos/5163429/pexels-photo-5163429.jpeg?auto=compress&cs=tinysrgb&w=1200";
-const areaImage =
-  "https://images.pexels.com/photos/29014467/pexels-photo-29014467.jpeg?auto=compress&cs=tinysrgb&w=1200";
+import Photo from "@/components/Photo";
+import SectionHeading from "@/components/SectionHeading";
+import CtaBand from "@/components/CtaBand";
+import { SIZES, pageImages } from "@/config/images";
+import { mapsEmbedUrl, site } from "@/config/site";
 
 const values = [
-  { icon: Heart, title: "Local Roots", description: "We are part of the Aurora community. Every property we care for reflects our pride in our home and our state." },
-  { icon: ShieldCheck, title: "Reliability", description: "We show up on schedule, every time. Consistent, dependable service you can count on year after year." },
-  { icon: Sparkles, title: "Attention to Detail", description: "From clean mowing lines to spotless cleanup, we sweat the details so your property always looks its best." },
-  { icon: Users, title: "Customer First", description: "We listen, communicate, and stand behind our work. Your satisfaction drives everything we do." },
+  { icon: Heart, title: "Pride in the work", text: "We treat every lawn as if it were our own, taking care with every cut, trim and edge." },
+  { icon: ShieldCheck, title: "Reliability", text: "Consistent, dependable service. We show up on time, every time." },
+  { icon: Leaf, title: "Care for the land", text: "Sustainable practices that protect local soil and water while keeping your lawn healthy." },
+  { icon: Users, title: "Customer first", text: "We listen, adapt and deliver results you will love. Your satisfaction drives everything." },
 ];
 
-const stats = [
-  { value: "500+", label: "Properties Served" },
-  { value: "8+", label: "Years in Business" },
-  { value: "4.9", label: "Average Rating" },
-  { value: "8", label: "Areas Served" },
+const milestones = [
+  { year: "2012", text: "Lentra LLC is founded in San Antonio with one mower and a big dream." },
+  { year: "2015", text: "We expand to commercial properties and hire our first full time crew." },
+  { year: "2018", text: "Landscape design joins the lineup and we pass 300 regular clients." },
+  { year: "2021", text: "We invest in commercial grade equipment and earth friendly practices." },
+  { year: "2024", text: "More than 500 properties across greater San Antonio trust us with their yards." },
 ];
+
+const badges = ["Licensed and insured", "Locally owned", "Free estimates", "Satisfaction guaranteed"];
 
 export default function About() {
   return (
-    <div>
+    <>
       <PageHeader
-        title="About Petraslynn"
-        subtitle="Locally owned, community focused lawn care serving Aurora and the greater Denver metro area."
-        breadcrumb="About"
-        image={heroImage}
+        eyebrow="About"
+        title="Rooted in San Antonio since 2012"
+        subtitle="A family owned lawn care company built on hard work, honesty and a love for beautiful yards."
+        image={pageImages.about.hero}
       />
 
-      {/* Story — quote-style intro then text+image */}
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 max-w-3xl mx-auto">
-            <Leaf className="w-10 h-10 text-gold-500 mx-auto mb-4" />
-            <p className="text-2xl md:text-3xl font-semibold text-pine-900 leading-snug text-balance">
-              &ldquo;We started Petraslynn because Colorado homeowners deserve a
-              lawn care company that actually shows up, does quality work, and
-              understands this climate.&rdquo;
+      <section className="section">
+        <div className="container-max grid items-center gap-16 lg:grid-cols-2">
+          <div className="relative">
+            <div className="overflow-hidden rounded-[2rem] bg-evergreen-100 shadow-lift">
+              <Photo src={pageImages.about.story} sizes={SIZES.half} alt="Lentra crew mowing a client's lawn" className="aspect-[4/3] w-full object-cover" />
+            </div>
+            <div className="absolute -bottom-6 -right-2 hidden rounded-2xl bg-clay-600 p-6 text-white shadow-lift md:block">
+              <p className="font-display text-4xl font-bold">12+</p>
+              <p className="text-sm text-clay-50">Years serving San Antonio</p>
+            </div>
+          </div>
+          <div>
+            <SectionHeading eyebrow="Our story" title="From one mower to the city's go to lawn team" />
+            <div className="mt-6 space-y-4 leading-relaxed text-sand-700">
+              <p>
+                Lentra LLC started with a simple goal: give San Antonio homeowners reliable, high quality lawn care at a fair price. What began as a one person operation has grown into a trusted team caring for hundreds of properties.
+              </p>
+              <p>
+                We never lost sight of what matters most. Every crew member is trained, insured and held to the standard that built our reputation: show up on time, do the job well and leave the property looking its best.
+              </p>
+              <p>
+                Today we offer everything from weekly mowing to complete landscape design, but our philosophy has not changed. We answer the phone, keep our promises and treat your yard like our own.
+              </p>
+            </div>
+            <ul className="mt-8 grid grid-cols-2 gap-4">
+              {badges.map((b) => (
+                <li key={b} className="flex items-center gap-3 text-sm font-medium text-evergreen-950">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-evergreen-50 text-evergreen-700">
+                    <Check className="h-4 w-4" />
+                  </span>
+                  {b}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section className="section bg-white">
+        <div className="container-max grid gap-6 md:grid-cols-2">
+          <div className="rounded-[2rem] bg-evergreen-900 p-10 text-white">
+            <Target className="h-10 w-10 text-clay-400" />
+            <h3 className="mt-6 text-2xl font-bold text-white">Our mission</h3>
+            <p className="mt-3 leading-relaxed text-evergreen-100/80">
+              To give San Antonio homeowners and businesses exceptional lawn care that adds beauty and value to their property, delivered reliably, affordably and responsibly.
             </p>
           </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <span className="text-gold-600 font-bold text-sm uppercase tracking-widest">
-                Our Story
-              </span>
-              <h2 className="text-3xl md:text-4xl font-semibold text-pine-900 mt-2 mb-6">
-                Built on Quality and Community Trust
-              </h2>
-              <div className="space-y-4 text-pine-600 leading-relaxed">
-                <p>
-                  Petraslynn LLC was founded in Aurora, Colorado with a simple
-                  mission: provide lawn care that Front Range homeowners can
-                  actually rely on. We saw too many neighbors frustrated by
-                  inconsistent crews, missed appointments, and companies that
-                  did not understand Colorado&apos;s high altitude growing
-                  conditions.
-                </p>
-                <p>
-                  We built our business one property at a time, earning trust
-                  through consistent, exceptional service. From weekly mowing
-                  to full landscape installations, we have grown our offerings
-                  to meet the real needs of our community.
-                </p>
-                <p>
-                  Today, we serve hundreds of properties across Aurora, Denver,
-                  Centennial, and beyond. But we have never lost the personal
-                  touch that earned us our reputation. When you call
-                  Petraslynn, you are working with a team that genuinely cares
-                  about your property.
-                </p>
-              </div>
-            </div>
-            <div className="relative">
-              <div className="rounded-2xl overflow-hidden shadow-2xl">
-                <img
-                  src={teamImage}
-                  alt="Petraslynn team at work"
-                  className="w-full h-[450px] object-cover"
-                />
-              </div>
-              <div className="absolute -top-5 -left-5 gold-gradient text-white rounded-xl px-6 py-4 shadow-xl hidden md:block">
-                <p className="text-3xl font-semibold">8+ Years</p>
-                <p className="text-sm font-medium">Serving Colorado</p>
-              </div>
-            </div>
+          <div className="rounded-[2rem] bg-clay-50 p-10">
+            <Eye className="h-10 w-10 text-clay-600" />
+            <h3 className="mt-6 text-2xl font-bold">Our vision</h3>
+            <p className="mt-3 leading-relaxed text-sand-700">
+              To be the most trusted lawn care company in San Antonio, known as much for the integrity of our team and the relationships we build as for the quality of our work.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* Stats — copper gradient bar */}
-      <section className="gold-gradient text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-            {stats.map((stat) => (
-              <div key={stat.label}>
-                <p className="text-4xl md:text-5xl font-semibold mb-1">
-                  {stat.value}
-                </p>
-                <p className="text-white/80 text-sm font-medium uppercase tracking-wide">
-                  {stat.label}
-                </p>
+      <section className="section">
+        <div className="container-max">
+          <SectionHeading center eyebrow="What drives us" title="Our core values" />
+          <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {values.map((v) => (
+              <div key={v.title} className="card p-7">
+                <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-evergreen-50 text-evergreen-700">
+                  <v.icon className="h-6 w-6" />
+                </span>
+                <h3 className="mt-5 text-lg font-semibold">{v.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-sand-700">{v.text}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Values — 2x2 icon cards with copper accent */}
-      <section className="py-24 bg-pine-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <span className="text-gold-600 font-bold text-sm uppercase tracking-widest">
-              Our Values
-            </span>
-            <h2 className="text-3xl md:text-4xl font-semibold text-pine-900 mt-2 mb-4">
-              What We Stand For
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            {values.map((value) => (
-              <div
-                key={value.title}
-                className="bg-white rounded-xl p-7 border border-pine-100 hover:shadow-lg transition-shadow duration-300 flex items-start gap-5"
-              >
-                <div className="w-14 h-14 rounded-xl bg-pine-900 flex items-center justify-center flex-shrink-0">
-                  <value.icon className="w-7 h-7 text-gold-400" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-pine-900 mb-2">{value.title}</h3>
-                  <p className="text-pine-500 text-sm leading-relaxed">
-                    {value.description}
-                  </p>
-                </div>
-              </div>
+      <section className="section bg-white">
+        <div className="container-max grid gap-16 lg:grid-cols-[1fr_1.4fr]">
+          <SectionHeading eyebrow="Our journey" title="Milestones through the years" />
+          <ol className="relative border-l-2 border-evergreen-100 pl-8">
+            {milestones.map((m) => (
+              <li key={m.year} className="relative pb-10 last:pb-0">
+                <span className="absolute -left-[41px] top-1 h-4 w-4 rounded-full border-4 border-white bg-clay-500 ring-2 ring-clay-200" />
+                <p className="font-display text-xl font-bold text-clay-600">{m.year}</p>
+                <p className="mt-1 leading-relaxed text-sand-700">{m.text}</p>
+              </li>
             ))}
-          </div>
+          </ol>
         </div>
       </section>
 
-      {/* Why Choose Us — horizontal feature row with navy bg */}
-      <section className="py-24 pine-gradient">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <span className="text-gold-400 font-bold text-sm uppercase tracking-widest">
-              Why Choose Us
-            </span>
-            <h2 className="text-3xl md:text-4xl font-semibold text-white mt-2 mb-4">
-              The Petraslynn Difference
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[
-              { icon: Award, title: "Professional Results", text: "Experienced crew and professional equipment deliver a clean, polished look every visit." },
-              { icon: Clock, title: "Dependable Scheduling", text: "We arrive on schedule and communicate clearly. No guessing when your service will happen." },
-              { icon: Truck, title: "All Equipment Provided", text: "We bring everything needed to get the job done right. You do not lift a finger." },
-              { icon: CheckCircle2, title: "Complete Cleanup", text: "We leave your property spotless. Clippings, leaves, and debris are always cleaned up." },
-            ].map((item) => (
-              <div
-                key={item.title}
-                className="flex items-start gap-4 p-6 rounded-xl bg-pine-800/60 border border-pine-700"
-              >
-                <div className="w-12 h-12 rounded-xl gold-gradient flex items-center justify-center flex-shrink-0">
-                  <item.icon className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-white mb-1">{item.title}</h3>
-                  <p className="text-pine-300 text-sm leading-relaxed">
-                    {item.text}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Service Area */}
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-            <div className="rounded-2xl overflow-hidden shadow-2xl">
-              <img
-                src={areaImage}
-                alt="Colorado landscape"
-                className="w-full h-[400px] object-cover"
-              />
-            </div>
-            <div>
-              <span className="text-gold-600 font-bold text-sm uppercase tracking-widest">
-                Service Area
-              </span>
-              <h2 className="text-3xl md:text-4xl font-semibold text-pine-900 mt-2 mb-5">
-                Areas We Serve
-              </h2>
-              <p className="text-pine-600 mb-6 leading-relaxed">
-                Proudly serving Aurora and the surrounding Denver metro
-                communities. If you are nearby but not sure if we cover your
-                neighborhood, just give us a call.
-              </p>
-              <div className="grid grid-cols-2 gap-3 mb-8">
-                {site.serviceAreas.map((area) => (
-                  <div
-                    key={area}
-                    className="flex items-center gap-2 text-pine-700 text-sm"
-                  >
-                    <MapPin className="w-4 h-4 text-gold-500" />
-                    {area}
-                  </div>
-                ))}
-              </div>
-              <Link
-                to="/contact"
-                className="inline-flex items-center gap-2 gold-gradient hover:opacity-90 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-200"
-              >
-                Check Your Area <ArrowRight className="w-5 h-5" />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA — navy gradient */}
-      <section className="py-16 pine-gradient">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-semibold text-white mb-4">
-            Let&apos;s Transform Your Property
-          </h2>
-          <p className="text-pine-200 mb-8">
-            Join hundreds of satisfied customers who trust Petraslynn with their
-            lawn care needs.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              to="/quote"
-              className="gold-gradient hover:opacity-90 text-white font-semibold px-8 py-4 rounded-lg transition-all duration-200 flex items-center gap-2"
-            >
-              Get a Free Quote <ArrowRight className="w-5 h-5" />
+      <section className="section">
+        <div className="container-max grid items-center gap-14 lg:grid-cols-2">
+          <div>
+            <SectionHeading
+              eyebrow="Service area"
+              title="Proudly serving greater San Antonio"
+              text="Based in San Antonio, we care for homes and businesses across the city and its neighboring communities. Not sure we cover your street? Just ask."
+            />
+            <ul className="mt-8 grid grid-cols-2 gap-3">
+              {site.serviceAreas.map((area) => (
+                <li key={area} className="flex items-center gap-2 text-sand-800">
+                  <MapPin className="h-4 w-4 shrink-0 text-clay-500" /> {area}
+                </li>
+              ))}
+            </ul>
+            <Link to="/quote" className="btn-dark mt-10">
+              Check your area <ArrowRight className="h-4 w-4" />
             </Link>
-            <a
-              href={`tel:${site.phoneRaw}`}
-              className="border border-pine-600 hover:border-gold-400 text-white font-semibold px-8 py-4 rounded-lg transition-all duration-200 flex items-center gap-2"
-            >
-              <Phone className="w-5 h-5" /> {site.phone}
-            </a>
+          </div>
+          <div className="overflow-hidden rounded-[2rem] bg-sand-200 shadow-lift">
+            <iframe
+              title="Lentra LLC location map"
+              src={mapsEmbedUrl}
+              className="h-[420px] w-full border-0"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
           </div>
         </div>
       </section>
-    </div>
+
+      <CtaBand />
+    </>
   );
 }

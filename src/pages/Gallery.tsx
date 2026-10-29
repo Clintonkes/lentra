@@ -1,157 +1,135 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, X, ZoomIn } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, Expand, X } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
-import { galleryImages } from "@/config/site";
+import Photo from "@/components/Photo";
+import { SIZES, pageImages } from "@/config/images";
+import { galleryCategories, galleryImages } from "@/config/site";
 
-const heroImage =
-  "https://images.pexels.com/photos/280222/pexels-photo-280222.jpeg?auto=compress&cs=tinysrgb&w=1600";
-const categories = ["All", "Mowing", "Trimming", "Cleanup", "Irrigation", "Design", "Full Service"];
+type Category = (typeof galleryCategories)[number];
 
 export default function Gallery() {
-  const [activeCategory, setActiveCategory] = useState("All");
-  const [lightbox, setLightbox] = useState<number | null>(null);
+  const [category, setCategory] = useState<Category>("All");
+  const [open, setOpen] = useState<number | null>(null);
 
-  const filtered =
-    activeCategory === "All"
-      ? galleryImages
-      : galleryImages.filter((img) => img.category === activeCategory);
+  const items = category === "All" ? galleryImages : galleryImages.filter((g) => g.category === category);
+  const current = open === null ? null : items[open];
 
-  const openLightbox = (index: number) => setLightbox(index);
-  const closeLightbox = () => setLightbox(null);
-  const nextImage = () =>
-    setLightbox((prev) =>
-      prev !== null ? (prev + 1) % filtered.length : null,
-    );
-  const prevImage = () =>
-    setLightbox((prev) =>
-      prev !== null ? (prev - 1 + filtered.length) % filtered.length : null,
-    );
+  useEffect(() => {
+    if (open === null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(null);
+      if (e.key === "ArrowRight") setOpen((i) => (i === null ? i : (i + 1) % items.length));
+      if (e.key === "ArrowLeft") setOpen((i) => (i === null ? i : (i - 1 + items.length) % items.length));
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open, items.length]);
 
   return (
-    <div>
+    <>
       <PageHeader
-        title="Our Work"
-        subtitle="See the quality of our lawn care and landscape management in action."
-        breadcrumb="Gallery"
-        image={heroImage}
+        eyebrow="Gallery"
+        title="Work we are proud of"
+        subtitle="Browse lawns and landscapes our crews have mowed, trimmed, cleaned up and built across San Antonio."
+        image={pageImages.gallery.hero}
       />
 
-      <section className="py-24 bg-pine-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Filters */}
-          <div className="flex flex-wrap justify-center gap-2 mb-12">
-            {categories.map((cat) => (
+      <section className="section">
+        <div className="container-max">
+          <div className="flex flex-wrap justify-center gap-2" role="tablist" aria-label="Filter by category">
+            {galleryCategories.map((c) => (
               <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
-                  activeCategory === cat
-                    ? "gold-gradient text-white shadow-md"
-                    : "bg-white text-pine-600 hover:bg-pine-100 border border-pine-200"
+                key={c}
+                type="button"
+                role="tab"
+                aria-selected={category === c}
+                onClick={() => setCategory(c)}
+                className={`rounded-full px-5 py-2.5 text-sm font-semibold transition ${
+                  category === c ? "bg-evergreen-900 text-white shadow-soft" : "bg-white text-evergreen-900 ring-1 ring-sand-200 hover:ring-evergreen-700"
                 }`}
               >
-                {cat}
+                {c}
               </button>
             ))}
           </div>
 
-          {/* Masonry-style grid */}
-          <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 [&>*]:mb-6">
-            {filtered.map((img, index) => (
-              <div
-                key={`${img.url}-${index}`}
-                className="group relative rounded-xl overflow-hidden shadow-sm cursor-pointer break-inside-avoid"
-                onClick={() => openLightbox(index)}
+          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {items.map((item, i) => (
+              <button
+                key={item.url}
+                type="button"
+                onClick={() => setOpen(i)}
+                className="group relative overflow-hidden rounded-3xl bg-evergreen-100 text-left shadow-soft"
               >
-                <img
-                  src={img.url}
-                  alt={img.caption}
-                  className="w-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-pine-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-5">
-                  <div>
-                    <span className="inline-block gold-gradient text-white text-xs font-semibold px-2.5 py-1 rounded-md mb-2">
-                      {img.category}
-                    </span>
-                    <p className="text-white text-sm font-medium">
-                      {img.caption}
-                    </p>
-                  </div>
-                </div>
-                <div className="absolute top-4 right-4 w-10 h-10 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <ZoomIn className="w-5 h-5 text-white" />
-                </div>
-              </div>
+                <Photo src={item.url} sizes={SIZES.galleryGrid} alt={item.caption} className="aspect-[4/3] w-full object-cover transition duration-700 group-hover:scale-105" />
+                <span className="absolute inset-0 bg-gradient-to-t from-evergreen-950/85 via-evergreen-950/10 to-transparent opacity-90 transition group-hover:opacity-100" />
+                <span className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-evergreen-900 opacity-0 transition group-hover:opacity-100">
+                  <Expand className="h-4 w-4" />
+                </span>
+                <span className="absolute inset-x-0 bottom-0 p-5">
+                  <span className="text-xs font-semibold uppercase tracking-[0.18em] text-clay-300">{item.category}</span>
+                  <span className="mt-1 block font-display text-lg font-semibold text-white">{item.caption}</span>
+                </span>
+              </button>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* Lightbox */}
-      {lightbox !== null && (
-        <div
-          className="fixed inset-0 z-50 bg-pine-950/95 flex items-center justify-center p-4"
-          onClick={closeLightbox}
-        >
-          <button
-            className="absolute top-6 right-6 text-white p-2 hover:text-gold-400 transition-colors"
-            aria-label="Close"
-            onClick={closeLightbox}
-          >
-            <X className="w-8 h-8" />
-          </button>
-          <button
-            className="absolute left-4 md:left-8 text-white p-2 hover:text-gold-400 transition-colors text-3xl"
-            onClick={(e) => {
-              e.stopPropagation();
-              prevImage();
-            }}
-            aria-label="Previous"
-          >
-            &#8592;
-          </button>
-          <button
-            className="absolute right-4 md:right-8 text-white p-2 hover:text-gold-400 transition-colors text-3xl"
-            onClick={(e) => {
-              e.stopPropagation();
-              nextImage();
-            }}
-            aria-label="Next"
-          >
-            &#8594;
-          </button>
-          <div className="max-w-4xl" onClick={(e) => e.stopPropagation()}>
-            <img
-              src={filtered[lightbox].url}
-              alt={filtered[lightbox].caption}
-              className="max-w-full max-h-[80vh] rounded-lg shadow-2xl mx-auto"
-            />
-            <p className="text-white text-center mt-4 text-sm font-medium">
-              {filtered[lightbox].caption}
-            </p>
+          <div className="mt-16 text-center">
+            <p className="text-sand-700">Want results like these for your property?</p>
+            <Link to="/quote" className="btn-primary mt-5">
+              Get Your Free Quote <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
         </div>
-      )}
-
-      {/* CTA — navy */}
-      <section className="py-16 pine-gradient">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-semibold text-white mb-4">
-            Want Results Like These?
-          </h2>
-          <p className="text-pine-200 mb-8">
-            Let us bring the same quality care to your property. Get a free quote
-            today.
-          </p>
-          <Link
-            to="/quote"
-            className="inline-flex items-center gap-2 gold-gradient hover:opacity-90 text-white font-semibold px-8 py-4 rounded-lg transition-all duration-200 shadow-lg"
-          >
-            Get Your Free Quote <ArrowRight className="w-5 h-5" />
-          </Link>
-        </div>
       </section>
-    </div>
+
+      {current && open !== null && (
+        <div
+          className="fixed inset-0 z-[60] flex animate-fade-in items-center justify-center bg-evergreen-950/95 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label={current.caption}
+          onClick={() => setOpen(null)}
+        >
+          <button type="button" className="absolute right-4 top-4 rounded-full p-2 text-white hover:bg-white/10" onClick={() => setOpen(null)} aria-label="Close">
+            <X className="h-7 w-7" />
+          </button>
+          <button
+            type="button"
+            className="absolute left-2 rounded-full p-2 text-white hover:bg-white/10 md:left-6"
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpen((open - 1 + items.length) % items.length);
+            }}
+            aria-label="Previous photo"
+          >
+            <ChevronLeft className="h-8 w-8" />
+          </button>
+          <figure className="w-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
+            <Photo src={current.url} sizes={SIZES.lightbox} alt={current.caption} className="max-h-[78vh] w-full rounded-2xl object-contain" />
+            <figcaption className="mt-4 text-center">
+              <span className="text-xs font-semibold uppercase tracking-[0.18em] text-clay-300">{current.category}</span>
+              <span className="mt-1 block font-display text-lg font-semibold text-white">{current.caption}</span>
+            </figcaption>
+          </figure>
+          <button
+            type="button"
+            className="absolute right-2 rounded-full p-2 text-white hover:bg-white/10 md:right-6"
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpen((open + 1) % items.length);
+            }}
+            aria-label="Next photo"
+          >
+            <ChevronRight className="h-8 w-8" />
+          </button>
+        </div>
+      )}
+    </>
   );
 }

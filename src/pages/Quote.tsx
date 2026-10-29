@@ -1,498 +1,255 @@
-import { useState, FormEvent } from "react";
-import {
-  ArrowRight, ArrowLeft, CheckCircle2, Loader2, AlertCircle,
-  Phone, Mail, User, Wrench, Calendar, ClipboardCheck, Check,
-} from "lucide-react";
+import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import { ArrowRight, CheckCircle2, Clock, Mail, Phone, ShieldCheck } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
-import { site, services } from "@/config/site";
-import { createBooking } from "@/lib/api";
+import { FormError, Sending } from "@/components/FormStatus";
+import { serviceIcons } from "@/components/icons";
+import { pageImages } from "@/config/images";
+import { services, site } from "@/config/site";
+import { createBooking, wakeBackend } from "@/lib/api";
 
-const heroImage =
-  "https://images.pexels.com/photos/37554739/pexels-photo-37554739.jpeg?auto=compress&cs=tinysrgb&w=1600";
-
-const serviceOptions = [
-  ...services.map((s) => s.title),
-  "Multiple services",
-  "Full maintenance plan",
-  "Not sure yet",
-];
-const frequencyOptions = ["Single visit", "Weekly", "Every other week", "Monthly", "Not sure yet"];
-const sizeOptions = [
-  "Under 1/4 acre",
-  "1/4 to 1/2 acre",
-  "1/2 to 1 acre",
-  "1 to 2 acres",
-  "2+ acres",
+const propertySizes = [
+  "Small (under 1/4 acre)",
+  "Medium (1/4 to 1/2 acre)",
+  "Large (1/2 to 1 acre)",
+  "Extra large (over 1 acre)",
   "Commercial property",
 ];
+const frequencies = ["One time", "Weekly", "Every other week", "Monthly", "Seasonal"];
+const times = ["Morning", "Afternoon", "Any time"];
 
-interface QuoteData {
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  service_type: string;
-  property_size: string;
-  frequency: string;
-  preferred_date: string;
-  message: string;
+const empty = {
+  service: "",
+  name: "",
+  phone: "",
+  email: "",
+  address: "",
+  lawn_size: "",
+  frequency: "",
+  preferred_date: "",
+  preferred_time: "",
+  notes: "",
+};
+
+function today() {
+  const d = new Date();
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0, 10);
 }
 
 export default function Quote() {
-  const [step, setStep] = useState(1);
-  const [data, setData] = useState<QuoteData>({
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
-    service_type: "",
-    property_size: "",
-    frequency: "",
-    preferred_date: "",
-    message: "",
-  });
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">(
-    "idle",
-  );
-  const [errorMsg, setErrorMsg] = useState("");
+  const [params] = useSearchParams();
+  const preselected = services.find((s) => s.slug === params.get("service"))?.title ?? "";
+  const [form, setForm] = useState({ ...empty, service: preselected });
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState("");
   const [reference, setReference] = useState("");
 
-  const update = (field: keyof QuoteData, value: string) =>
-    setData({ ...data, [field]: value });
+  useEffect(wakeBackend, []);
 
-  const canProceed = () => {
-    if (step === 1) return data.name && data.email && data.phone && data.address;
-    if (step === 2) return data.service_type;
-    return true;
-  };
+  const update = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
+    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
 
-  const handleSubmit = async (e: FormEvent) => {
+  const submit = async (e: FormEvent) => {
     e.preventDefault();
-    // Pressing Enter inside an earlier step submits the form; treat it as
-    // "Continue" instead of sending a half-filled request.
-    if (step < 3) {
-      if (canProceed()) setStep(step + 1);
+    if (!form.service) {
+      setError("Please choose the service you are interested in.");
       return;
     }
-    setStatus("loading");
-    setErrorMsg("");
+    setSending(true);
+    setError("");
     try {
       const booking = await createBooking({
-        name: data.name,
-        email: data.email,
-        phone: data.phone,
-        address: data.address,
-        service: data.service_type,
-        lawn_size: data.property_size || undefined,
-        frequency: data.frequency || undefined,
-        preferred_date: data.preferred_date || undefined,
-        notes: data.message || undefined,
+        service: form.service,
+        name: form.name.trim(),
+        phone: form.phone.trim(),
+        email: form.email.trim(),
+        address: form.address.trim(),
+        // Optional fields go out as undefined, not "": the API rejects an
+        // empty string for a date.
+        lawn_size: form.lawn_size || undefined,
+        frequency: form.frequency || undefined,
+        preferred_date: form.preferred_date || undefined,
+        preferred_time: form.preferred_time || undefined,
+        notes: form.notes.trim() || undefined,
       });
       setReference(booking.reference);
-      setStatus("success");
+      setForm(empty);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
-      setStatus("error");
-      setErrorMsg(
-        err instanceof Error ? err.message : "Something went wrong. Please try again.",
-      );
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again or call us.");
+    } finally {
+      setSending(false);
     }
   };
 
-  if (status === "success") {
-    return (
-      <div className="min-h-screen bg-pine-50 flex items-center justify-center px-4 pt-28 pb-16">
-        <div className="max-w-lg w-full bg-white rounded-2xl shadow-xl p-10 text-center">
-          <div className="w-20 h-20 rounded-full bg-gold-100 flex items-center justify-center mx-auto mb-6">
-            <CheckCircle2 className="w-12 h-12 text-gold-600" />
-          </div>
-          <h2 className="text-2xl font-semibold text-pine-900 mb-3">
-            Quote Request Received!
-          </h2>
-          <p className="text-pine-600 mb-8 leading-relaxed">
-            Thank you for reaching out to Petraslynn LLC. Our team will review
-            your request and contact you within 24 hours to schedule your free
-            property assessment.
-          </p>
-          {reference && (
-            <p className="text-sm text-pine-500 mb-8">
-              Your reference number is{" "}
-              <span className="font-mono font-semibold text-pine-900">{reference}</span>.
-              A confirmation has been sent to your email.
-            </p>
-          )}
-          <div className="bg-pine-50 rounded-xl p-5 mb-8 text-left">
-            <p className="text-sm text-pine-500 mb-2">Need to talk to us now?</p>
-            <a
-              href={`tel:${site.phoneRaw}`}
-              className="flex items-center gap-2 text-gold-600 font-semibold"
-            >
-              <Phone className="w-5 h-5" /> {site.phone}
-            </a>
-          </div>
-          <button
-            onClick={() => {
-              setStatus("idle");
-              setStep(1);
-              setData({
-                name: "",
-                email: "",
-                phone: "",
-                address: "",
-                service_type: "",
-                property_size: "",
-                frequency: "",
-                preferred_date: "",
-                message: "",
-              });
-            }}
-            className="bg-pine-900 hover:bg-pine-800 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-200"
-          >
-            Submit Another Request
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  const steps = [
-    { num: 1, label: "Your Info", icon: User },
-    { num: 2, label: "Service Details", icon: Wrench },
-    { num: 3, label: "Review & Submit", icon: ClipboardCheck },
-  ];
-
   return (
-    <div>
+    <>
       <PageHeader
-        title="Get a Free Quote"
-        subtitle="Answer a few questions and we'll prepare a tailored quote. No obligation."
-        breadcrumb="Quote"
-        image={heroImage}
+        eyebrow="Free quote"
+        title="Get your free quote"
+        subtitle="Tell us about your property and we will send a custom estimate within one business day. No obligation, ever."
+        image={pageImages.quote.hero}
       />
 
-      <section className="py-20 bg-pine-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Horizontal progress bar */}
-          <div className="flex items-center justify-between mb-10 max-w-2xl mx-auto">
-            {steps.map((s, i) => (
-              <div key={s.num} className="flex items-center flex-1 last:flex-none">
-                <div className="flex flex-col items-center">
-                  <div
-                    className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold transition-all duration-300 ${
-                      step >= s.num
-                        ? "gold-gradient text-white shadow-lg shadow-gold-500/20"
-                        : "bg-white text-pine-300 border border-pine-200"
-                    }`}
-                  >
-                    {step > s.num ? (
-                      <Check className="w-6 h-6" />
-                    ) : (
-                      <s.icon className="w-5 h-5" />
-                    )}
-                  </div>
-                  <span
-                    className={`text-xs mt-2 font-medium ${
-                      step >= s.num ? "text-gold-600" : "text-pine-400"
-                    }`}
-                  >
-                    {s.label}
-                  </span>
+      <section className="section">
+        <div className="container-max grid gap-10 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            {reference ? (
+              <div className="card p-8 text-center md:p-14">
+                <span className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-evergreen-50">
+                  <CheckCircle2 className="h-10 w-10 text-evergreen-600" />
+                </span>
+                <h2 className="mt-6 text-3xl font-bold">Request received</h2>
+                <p className="mx-auto mt-4 max-w-lg leading-relaxed text-sand-700">
+                  Thank you for choosing {site.name}. We have emailed you a confirmation and will be in touch within one business day with your estimate.
+                </p>
+                <p className="mx-auto mt-8 inline-block rounded-2xl bg-sand-100 px-6 py-4">
+                  <span className="block text-xs font-semibold uppercase tracking-[0.2em] text-sand-600">Your reference</span>
+                  <span className="mt-1 block font-display text-2xl font-bold tracking-wider text-evergreen-950">{reference}</span>
+                </p>
+                <div className="mt-10 flex flex-wrap justify-center gap-4">
+                  <Link to="/" className="btn-dark">
+                    Back to home <ArrowRight className="h-4 w-4" />
+                  </Link>
+                  <button type="button" onClick={() => setReference("")} className="btn-outline">
+                    Request another quote
+                  </button>
                 </div>
-                {i < steps.length - 1 && (
-                  <div
-                    className={`flex-1 h-0.5 mx-3 rounded-full transition-all duration-300 ${
-                      step > s.num ? "gold-gradient" : "bg-pine-200"
-                    }`}
-                  />
-                )}
               </div>
-            ))}
+            ) : (
+              <form onSubmit={submit} className="card space-y-8 p-6 md:p-10">
+                <fieldset>
+                  <legend className="font-display text-xl font-semibold text-evergreen-950">
+                    1. Which service do you need? <span className="text-clay-600">*</span>
+                  </legend>
+                  <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-3">
+                    {services.map((s) => {
+                      const Icon = serviceIcons[s.icon];
+                      const active = form.service === s.title;
+                      return (
+                        <button
+                          key={s.slug}
+                          type="button"
+                          aria-pressed={active}
+                          onClick={() => setForm((f) => ({ ...f, service: s.title }))}
+                          className={`flex flex-col items-center gap-2 rounded-2xl border p-4 text-center transition ${
+                            active
+                              ? "border-evergreen-800 bg-evergreen-900 text-white shadow-soft"
+                              : "border-sand-200 bg-sand-50 text-evergreen-950 hover:border-evergreen-600"
+                          }`}
+                        >
+                          <Icon className={`h-6 w-6 ${active ? "text-clay-300" : "text-evergreen-700"}`} />
+                          <span className="text-sm font-semibold leading-tight">{s.title}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </fieldset>
+
+                <fieldset>
+                  <legend className="font-display text-xl font-semibold text-evergreen-950">2. Your details</legend>
+                  <div className="mt-5 grid gap-5 sm:grid-cols-2">
+                    <div>
+                      <label htmlFor="q-name" className="label">Full name <span className="text-clay-600">*</span></label>
+                      <input id="q-name" name="name" required autoComplete="name" value={form.name} onChange={update} className="input" placeholder="Jane Smith" />
+                    </div>
+                    <div>
+                      <label htmlFor="q-phone" className="label">Phone <span className="text-clay-600">*</span></label>
+                      <input id="q-phone" name="phone" type="tel" required autoComplete="tel" value={form.phone} onChange={update} className="input" placeholder="(210) 555 0123" />
+                    </div>
+                    <div>
+                      <label htmlFor="q-email" className="label">Email <span className="text-clay-600">*</span></label>
+                      <input id="q-email" name="email" type="email" required autoComplete="email" value={form.email} onChange={update} className="input" placeholder="jane@example.com" />
+                    </div>
+                    <div>
+                      <label htmlFor="q-address" className="label">Property address <span className="text-clay-600">*</span></label>
+                      <input id="q-address" name="address" required autoComplete="street-address" value={form.address} onChange={update} className="input" placeholder="123 Main St, San Antonio, TX" />
+                    </div>
+                  </div>
+                </fieldset>
+
+                <fieldset>
+                  <legend className="font-display text-xl font-semibold text-evergreen-950">3. Property and timing</legend>
+                  <div className="mt-5 grid gap-5 sm:grid-cols-2">
+                    <div>
+                      <label htmlFor="q-size" className="label">Property size</label>
+                      <select id="q-size" name="lawn_size" value={form.lawn_size} onChange={update} className="input">
+                        <option value="">Select a size</option>
+                        {propertySizes.map((s) => <option key={s}>{s}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label htmlFor="q-frequency" className="label">How often</label>
+                      <select id="q-frequency" name="frequency" value={form.frequency} onChange={update} className="input">
+                        <option value="">Select a frequency</option>
+                        {frequencies.map((f) => <option key={f}>{f}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label htmlFor="q-date" className="label">Preferred start date</label>
+                      <input id="q-date" name="preferred_date" type="date" min={today()} value={form.preferred_date} onChange={update} className="input" />
+                    </div>
+                    <div>
+                      <label htmlFor="q-time" className="label">Preferred time</label>
+                      <select id="q-time" name="preferred_time" value={form.preferred_time} onChange={update} className="input">
+                        <option value="">Select a time</option>
+                        {times.map((t) => <option key={t}>{t}</option>)}
+                      </select>
+                    </div>
+                    <div className="sm:col-span-2">
+                      <label htmlFor="q-notes" className="label">Anything else we should know?</label>
+                      <textarea id="q-notes" name="notes" rows={4} value={form.notes} onChange={update} className="input resize-y" placeholder="Gate codes, pets, problem areas or questions about your lawn" />
+                    </div>
+                  </div>
+                </fieldset>
+
+                <FormError message={error} />
+
+                <button type="submit" disabled={sending} className="btn-primary w-full py-4 text-base">
+                  {sending ? <Sending label="Sending your request" /> : <>Get My Free Quote <ArrowRight className="h-5 w-5" /></>}
+                </button>
+                <p className="flex items-center justify-center gap-2 text-center text-xs text-sand-600">
+                  <ShieldCheck className="h-4 w-4 text-evergreen-600" /> Your details are only used to prepare your quote.
+                </p>
+              </form>
+            )}
           </div>
 
-          <form
-            onSubmit={handleSubmit}
-            className="bg-white rounded-2xl shadow-lg border border-pine-100 p-8 md:p-10"
-          >
-            {status === "error" && (
-              <div className="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
-                <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
-                <div>
-                  <p className="text-red-700 font-medium text-sm">
-                    Submission failed
-                  </p>
-                  <p className="text-red-600 text-sm">{errorMsg}</p>
-                </div>
-              </div>
-            )}
-
-            {/* Step 1 — Contact info */}
-            {step === 1 && (
-              <div className="space-y-5 animate-fade-in">
-                <div>
-                  <h2 className="text-2xl font-semibold text-pine-900 mb-1">
-                    Let&apos;s start with you
-                  </h2>
-                  <p className="text-pine-500 text-sm mb-6">
-                    We need your contact info to follow up with your quote.
-                  </p>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-pine-700 mb-1.5">
-                    Full Name <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={data.name}
-                    onChange={(e) => update("name", e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg border border-pine-200 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 outline-none transition-all text-sm"
-                    placeholder="John Smith"
-                  />
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <div>
-                    <label className="block text-sm font-medium text-pine-700 mb-1.5">
-                      Email <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="email"
-                      required
-                      value={data.email}
-                      onChange={(e) => update("email", e.target.value)}
-                      className="w-full px-4 py-3 rounded-lg border border-pine-200 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 outline-none transition-all text-sm"
-                      placeholder="john@example.com"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-pine-700 mb-1.5">
-                      Phone <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="tel"
-                      required
-                      value={data.phone}
-                      onChange={(e) => update("phone", e.target.value)}
-                      className="w-full px-4 py-3 rounded-lg border border-pine-200 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 outline-none transition-all text-sm"
-                      placeholder="(303) 555 0100"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-pine-700 mb-1.5">
-                    Property Address <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={data.address}
-                    onChange={(e) => update("address", e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg border border-pine-200 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 outline-none transition-all text-sm"
-                    placeholder="748 Victor Street, Aurora, CO 80011"
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* Step 2 — Service details */}
-            {step === 2 && (
-              <div className="space-y-5 animate-fade-in">
-                <div>
-                  <h2 className="text-2xl font-semibold text-pine-900 mb-1">
-                    Tell us about your needs
-                  </h2>
-                  <p className="text-pine-500 text-sm mb-6">
-                    What kind of service are you looking for?
-                  </p>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-pine-700 mb-1.5">
-                    Service Needed <span className="text-red-500">*</span>
-                  </label>
-                  <select
-                    required
-                    value={data.service_type}
-                    onChange={(e) => update("service_type", e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg border border-pine-200 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 outline-none transition-all text-sm bg-white"
-                  >
-                    <option value="">Select a service</option>
-                    {serviceOptions.map((s) => (
-                      <option key={s} value={s}>
-                        {s}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <div>
-                    <label className="block text-sm font-medium text-pine-700 mb-1.5">
-                      Property Size
-                    </label>
-                    <select
-                      value={data.property_size}
-                      onChange={(e) => update("property_size", e.target.value)}
-                      className="w-full px-4 py-3 rounded-lg border border-pine-200 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 outline-none transition-all text-sm bg-white"
-                    >
-                      <option value="">Select size</option>
-                      {sizeOptions.map((s) => (
-                        <option key={s} value={s}>
-                          {s}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-pine-700 mb-1.5">
-                      Frequency
-                    </label>
-                    <select
-                      value={data.frequency}
-                      onChange={(e) => update("frequency", e.target.value)}
-                      className="w-full px-4 py-3 rounded-lg border border-pine-200 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 outline-none transition-all text-sm bg-white"
-                    >
-                      <option value="">Select frequency</option>
-                      {frequencyOptions.map((f) => (
-                        <option key={f} value={f}>
-                          {f}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-pine-700 mb-1.5">
-                    Preferred Start Date
-                  </label>
-                  <input
-                    type="date"
-                    min={new Date().toISOString().split("T")[0]}
-                    value={data.preferred_date}
-                    onChange={(e) => update("preferred_date", e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg border border-pine-200 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 outline-none transition-all text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-pine-700 mb-1.5">
-                    Additional Details
-                  </label>
-                  <textarea
-                    rows={3}
-                    value={data.message}
-                    onChange={(e) => update("message", e.target.value)}
-                    className="w-full px-4 py-3 rounded-lg border border-pine-200 focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 outline-none transition-all text-sm resize-none"
-                    placeholder="Any specific concerns, problem areas, or goals for your property..."
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* Step 3 — Review */}
-            {step === 3 && (
-              <div className="animate-fade-in">
-                <div>
-                  <h2 className="text-2xl font-semibold text-pine-900 mb-1">
-                    Review your request
-                  </h2>
-                  <p className="text-pine-500 text-sm mb-6">
-                    Please confirm your details before submitting.
-                  </p>
-                </div>
-                <div className="bg-pine-50 rounded-xl p-6 space-y-4">
-                  {[
-                    { icon: User, label: "Name", value: data.name },
-                    { icon: Mail, label: "Email", value: data.email },
-                    { icon: Phone, label: "Phone", value: data.phone },
-                    { icon: ClipboardCheck, label: "Address", value: data.address },
-                    { icon: Wrench, label: "Service", value: data.service_type },
-                    { icon: ClipboardCheck, label: "Property Size", value: data.property_size },
-                    { icon: Calendar, label: "Frequency", value: data.frequency },
-                    { icon: Calendar, label: "Preferred Date", value: data.preferred_date },
-                    { icon: ClipboardCheck, label: "Notes", value: data.message },
-                  ]
-                    .filter((item) => item.value)
-                    .map((item) => (
-                      <div
-                        key={item.label}
-                        className="flex items-start gap-3"
-                      >
-                        <item.icon className="w-5 h-5 text-gold-500 flex-shrink-0 mt-0.5" />
-                        <div>
-                          <p className="text-xs text-pine-400 uppercase tracking-wide">
-                            {item.label}
-                          </p>
-                          <p className="text-pine-800 font-medium text-sm">
-                            {item.value}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              </div>
-            )}
-
-            {/* Navigation */}
-            <div className="flex items-center justify-between mt-8">
-              {step > 1 ? (
-                <button
-                  type="button"
-                  onClick={() => setStep(step - 1)}
-                  className="flex items-center gap-2 text-pine-600 hover:text-pine-900 font-medium text-sm transition-colors"
-                >
-                  <ArrowLeft className="w-4 h-4" /> Back
-                </button>
-              ) : (
-                <span />
-              )}
-              {/* Distinct keys stop React reusing one <button> for both: if
-                  "Continue" became type="submit" mid-click, the click that
-                  opens the review step would also submit the form. */}
-              {step < 3 ? (
-                <button
-                  key="continue"
-                  type="button"
-                  onClick={() => canProceed() && setStep(step + 1)}
-                  disabled={!canProceed()}
-                  className="flex items-center gap-2 gold-gradient hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold px-6 py-3 rounded-lg transition-all duration-200"
-                >
-                  Continue <ArrowRight className="w-5 h-5" />
-                </button>
-              ) : (
-                <button
-                  key="submit"
-                  type="submit"
-                  disabled={status === "loading"}
-                  className="flex items-center gap-2 gold-gradient hover:opacity-90 disabled:opacity-50 text-white font-semibold px-8 py-3 rounded-lg transition-all duration-200"
-                >
-                  {status === "loading" ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" /> Submitting...
-                    </>
-                  ) : (
-                    <>
-                      Submit Request <CheckCircle2 className="w-5 h-5" />
-                    </>
-                  )}
-                </button>
-              )}
+          <aside className="space-y-6">
+            <div className="rounded-3xl bg-evergreen-900 p-7 text-white">
+              <h3 className="text-xl font-bold text-white">Why request a quote?</h3>
+              <ul className="mt-5 space-y-3 text-sm text-evergreen-50/90">
+                {["Free, no obligation estimate", "Tailored to your property", "Reply within one business day", "No hidden fees or surprises", "Flexible scheduling"].map((item) => (
+                  <li key={item} className="flex items-center gap-3">
+                    <CheckCircle2 className="h-5 w-5 shrink-0 text-clay-400" /> {item}
+                  </li>
+                ))}
+              </ul>
             </div>
-          </form>
-
-          {/* Quick contact */}
-          <div className="mt-8 flex items-center justify-center gap-6 text-sm">
-            <a
-              href={`tel:${site.phoneRaw}`}
-              className="flex items-center gap-2 text-pine-600 hover:text-gold-600 transition-colors"
-            >
-              <Phone className="w-4 h-4" /> {site.phone}
-            </a>
-            <span className="text-pine-300">|</span>
-            <a
-              href={`mailto:${site.email}`}
-              className="flex items-center gap-2 text-pine-600 hover:text-gold-600 transition-colors"
-            >
-              <Mail className="w-4 h-4" /> Email Us
-            </a>
-          </div>
+            <div className="rounded-3xl bg-clay-50 p-7">
+              <h3 className="text-xl font-bold">Prefer to talk?</h3>
+              <a href={`tel:${site.phoneRaw}`} className="mt-4 flex items-center gap-3 font-display text-xl font-bold text-clay-700 hover:text-clay-800">
+                <Phone className="h-5 w-5" /> {site.phone}
+              </a>
+              <a href={`mailto:${site.email}`} className="mt-3 flex items-center gap-3 text-sm text-sand-800 hover:text-clay-700">
+                <Mail className="h-4 w-4" /> {site.email}
+              </a>
+              <p className="mt-4 flex items-center gap-3 border-t border-clay-200 pt-4 text-sm text-sand-700">
+                <Clock className="h-4 w-4 shrink-0" /> {site.hoursShort}
+              </p>
+            </div>
+            <div className="card p-7">
+              <h3 className="text-lg font-bold">Areas we serve</h3>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {site.serviceAreas.map((a) => (
+                  <span key={a} className="rounded-full bg-evergreen-50 px-3 py-1 text-xs font-medium text-evergreen-800">{a}</span>
+                ))}
+              </div>
+            </div>
+          </aside>
         </div>
       </section>
-    </div>
+    </>
   );
 }

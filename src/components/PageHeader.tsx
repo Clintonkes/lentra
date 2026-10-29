@@ -1,34 +1,30 @@
 import { Link } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
+import Photo from "./Photo";
+import { SIZES } from "@/config/images";
 
 interface PageHeaderProps {
+  eyebrow: string;
   title: string;
   subtitle: string;
-  breadcrumb: string;
   image: string;
 }
 
-export default function PageHeader({ title, subtitle, breadcrumb, image }: PageHeaderProps) {
+export default function PageHeader({ eyebrow, title, subtitle, image }: PageHeaderProps) {
   return (
-    // pt-20 clears the fixed navbar (h-20).
-    <section className="relative pt-20 overflow-hidden">
+    <section className="relative overflow-hidden bg-evergreen-950 pt-20">
       <div className="absolute inset-0">
-        <img src={image} alt="" className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-r from-pine-950/95 via-pine-900/85 to-pine-900/60" />
+        <Photo src={image} sizes={SIZES.full} alt="" priority className="h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-r from-evergreen-950 via-evergreen-950/85 to-evergreen-950/40" />
       </div>
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
-        <nav className="flex items-center gap-2 text-sm text-pine-200 mb-5" aria-label="Breadcrumb">
-          <Link to="/" className="hover:text-gold-400 transition-colors">
-            Home
-          </Link>
-          <ChevronRight className="w-4 h-4 text-gold-400" />
-          <span className="text-gold-400 font-medium">{breadcrumb}</span>
+      <div className="container-max relative py-20 md:py-28">
+        <nav className="mb-6 flex items-center gap-2 text-sm text-evergreen-100/80" aria-label="Breadcrumb">
+          <Link to="/" className="transition hover:text-white">Home</Link>
+          <ChevronRight className="h-4 w-4 text-clay-400" />
+          <span className="font-medium text-white">{eyebrow}</span>
         </nav>
-        <h1 className="text-4xl md:text-5xl font-semibold text-white mb-4 max-w-3xl">
-          {title}
-        </h1>
-        <p className="text-lg text-pine-100 max-w-2xl leading-relaxed">{subtitle}</p>
-        <div className="w-16 h-1 gold-gradient rounded-full mt-8" />
+        <h1 className="max-w-3xl animate-fade-up text-4xl font-bold text-white text-balance md:text-6xl">{title}</h1>
+        <p className="mt-5 max-w-2xl animate-fade-up text-lg leading-relaxed text-evergreen-50/85 [animation-delay:120ms]">{subtitle}</p>
       </div>
     </section>
   );

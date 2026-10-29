@@ -1,10 +1,10 @@
-import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Menu, X, Phone } from "lucide-react";
-import { site } from "@/config/site";
+import { Link, NavLink, useLocation } from "react-router-dom";
+import { ArrowRight, Menu, Phone, X } from "lucide-react";
 import Logo from "./Logo";
+import { site } from "@/config/site";
 
-const navLinks = [
+const links = [
   { to: "/", label: "Home" },
   { to: "/about", label: "About" },
   { to: "/services", label: "Services" },
@@ -14,121 +14,113 @@ const navLinks = [
 ];
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const location = useLocation();
+  const { pathname } = useLocation();
 
   useEffect(() => {
-    setIsOpen(false);
-  }, [location.pathname]);
-
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 30);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const isActive = (path: string) => {
-    if (path === "/") return location.pathname === "/";
-    return location.pathname.startsWith(path);
-  };
+  useEffect(() => setOpen(false), [pathname]);
+
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  const solid = scrolled || open;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50">
-      <div
-        className={`transition-all duration-400 ${
-          scrolled
-            ? "bg-pine-900 shadow-2xl shadow-pine-950/30"
-            : "bg-pine-900/90 backdrop-blur-md"
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
-            {/* Logo */}
-            <Link to="/" className="flex items-center group" aria-label="Petraslynn LLC home">
-              <Logo />
-            </Link>
+    <header
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+        solid ? "bg-evergreen-950/95 shadow-lg shadow-evergreen-950/20 backdrop-blur-md" : "bg-gradient-to-b from-evergreen-950/70 to-transparent"
+      }`}
+    >
+      <nav className="container-max flex h-20 items-center justify-between gap-6" aria-label="Main">
+        <Link to="/" className="group" aria-label="Lentra LLC home">
+          <Logo />
+        </Link>
 
-            {/* Desktop nav */}
-            <nav className="hidden lg:flex items-center gap-1">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.to}
-                  to={link.to}
-                  className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                    isActive(link.to)
-                      ? "text-gold-400"
-                      : "text-pine-100 hover:text-gold-400"
-                  }`}
-                >
-                  {link.label}
-                  {isActive(link.to) && (
-                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-0.5 gold-gradient rounded-full" />
-                  )}
-                </Link>
-              ))}
-            </nav>
-
-            {/* CTA */}
-            <div className="hidden lg:flex items-center gap-4">
-              <a
-                href={`tel:${site.phoneRaw}`}
-                className="flex items-center gap-2 text-pine-100 hover:text-gold-400 font-medium text-sm transition-colors"
+        <ul className="hidden items-center gap-1 lg:flex">
+          {links.map((link) => (
+            <li key={link.to}>
+              <NavLink
+                to={link.to}
+                end={link.to === "/"}
+                className={({ isActive }) =>
+                  `relative rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                    isActive ? "text-white" : "text-evergreen-100/80 hover:text-white"
+                  }`
+                }
               >
-                <Phone className="w-4 h-4" />
-                {site.phone}
-              </a>
-              <Link
-                to="/quote"
-                className="gold-gradient hover:opacity-90 text-white font-semibold px-5 py-2.5 rounded-lg text-sm transition-all duration-200 shadow-lg shadow-gold-500/20"
-              >
-                Free Quote
-              </Link>
-            </div>
+                {({ isActive }) => (
+                  <>
+                    {link.label}
+                    <span
+                      className={`absolute inset-x-4 -bottom-0.5 h-0.5 rounded-full bg-clay-400 transition-transform duration-300 ${
+                        isActive ? "scale-x-100" : "scale-x-0"
+                      }`}
+                    />
+                  </>
+                )}
+              </NavLink>
+            </li>
+          ))}
+        </ul>
 
-            {/* Mobile toggle */}
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="lg:hidden text-white p-2"
-              aria-label="Toggle menu"
-            >
-              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
+        <div className="hidden items-center gap-5 lg:flex">
+          <a href={`tel:${site.phoneRaw}`} className="flex items-center gap-2 text-sm font-medium text-white/90 hover:text-white">
+            <Phone className="h-4 w-4 text-clay-400" />
+            {site.phone}
+          </a>
+          <Link to="/quote" className="btn-primary py-2.5 px-5 text-sm">
+            Free Quote <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
 
-        {/* Mobile menu */}
-        {isOpen && (
-          <div className="lg:hidden bg-pine-950 border-t border-pine-800">
-            <nav className="flex flex-col px-4 py-4 gap-1">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.to}
-                  to={link.to}
-                  className={`px-4 py-3 rounded-lg text-sm font-medium transition-all ${
-                    isActive(link.to)
-                      ? "text-gold-400 bg-gold-500/10"
-                      : "text-pine-100 hover:bg-pine-800"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <Link
-                to="/quote"
-                className="mt-2 gold-gradient text-white font-semibold px-6 py-3 rounded-lg text-center text-sm"
+        <button
+          type="button"
+          onClick={() => setOpen((o) => !o)}
+          className="rounded-full p-2 text-white lg:hidden"
+          aria-label={open ? "Close menu" : "Open menu"}
+          aria-expanded={open}
+        >
+          {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        </button>
+      </nav>
+
+      <div className={`overflow-hidden transition-[max-height] duration-300 lg:hidden ${open ? "max-h-[calc(100vh-5rem)]" : "max-h-0"}`}>
+        <ul className="container-max flex flex-col gap-1 pb-6 pt-2">
+          {links.map((link) => (
+            <li key={link.to}>
+              <NavLink
+                to={link.to}
+                end={link.to === "/"}
+                className={({ isActive }) =>
+                  `block rounded-2xl px-4 py-3 font-display text-lg font-medium ${
+                    isActive ? "bg-white/10 text-white" : "text-evergreen-100 hover:bg-white/5"
+                  }`
+                }
               >
-                Get a Free Quote
-              </Link>
-              <a
-                href={`tel:${site.phoneRaw}`}
-                className="flex items-center justify-center gap-2 mt-2 text-pine-100 font-medium text-sm"
-              >
-                <Phone className="w-4 h-4" /> {site.phone}
-              </a>
-            </nav>
-          </div>
-        )}
+                {link.label}
+              </NavLink>
+            </li>
+          ))}
+          <li className="mt-3 grid gap-3 sm:grid-cols-2">
+            <Link to="/quote" className="btn-primary">
+              Get a Free Quote <ArrowRight className="h-4 w-4" />
+            </Link>
+            <a href={`tel:${site.phoneRaw}`} className="btn-ghost">
+              <Phone className="h-4 w-4" /> {site.phone}
+            </a>
+          </li>
+        </ul>
       </div>
     </header>
   );

@@ -1,68 +1,71 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./index.html", "./src/**/*.{ts,tsx}"],
+  content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
     extend: {
-      fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        display: ["Fraunces", "Georgia", "serif"],
-      },
       colors: {
-        // Deep evergreen: dark sections, headings and body text.
-        pine: {
-          50: "#f6f5ef",
-          100: "#e8ebe0",
-          200: "#cdd6c6",
-          300: "#a5b69f",
-          400: "#7a9378",
-          500: "#58735a",
-          600: "#425c45",
-          700: "#324836",
-          800: "#22372a",
-          900: "#15271d",
-          950: "#0b1811",
+        // Primary: a deep evergreen with a hint of teal.
+        evergreen: {
+          50: '#effaf6',
+          100: '#d8f1e7',
+          200: '#b2e2d0',
+          300: '#7fcab1',
+          400: '#4bab8e',
+          500: '#2b8f74',
+          600: '#1e735e',
+          700: '#1a5c4d',
+          800: '#174a3f',
+          900: '#123a32',
+          950: '#08221d',
         },
-        // Burnished gold: accents, calls to action and highlights.
-        gold: {
-          50: "#fbf8ef",
-          100: "#f5ecd3",
-          200: "#ebd8a6",
-          300: "#e0c07a",
-          400: "#d4a955",
-          500: "#c08f3a",
-          600: "#9a6b24",
-          700: "#7d5520",
-          800: "#664520",
-          900: "#553a1f",
+        // Accent: sunbaked Texas terracotta.
+        clay: {
+          50: '#fdf5f0',
+          100: '#fbe7db',
+          200: '#f6cbb2',
+          300: '#efa881',
+          400: '#e6814f',
+          500: '#dc6430',
+          600: '#c24e22',
+          700: '#a13d1e',
+          800: '#82331f',
+          900: '#6a2c1c',
+        },
+        // Neutral: warm limestone and sand.
+        sand: {
+          50: '#fbf9f5',
+          100: '#f4efe6',
+          200: '#e8dfcf',
+          300: '#d6c8ae',
+          400: '#bba98a',
+          500: '#9f8c6c',
+          600: '#7f6f55',
+          700: '#625645',
+          800: '#463e33',
+          900: '#2c2721',
         },
       },
-      keyframes: {
-        "fade-up": {
-          "0%": { opacity: "0", transform: "translateY(24px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
-        },
-        "fade-in": {
-          "0%": { opacity: "0" },
-          "100%": { opacity: "1" },
-        },
-        "slide-left": {
-          "0%": { opacity: "0", transform: "translateX(30px)" },
-          "100%": { opacity: "1", transform: "translateX(0)" },
-        },
-        "scale-in": {
-          "0%": { opacity: "0", transform: "scale(0.92)" },
-          "100%": { opacity: "1", transform: "scale(1)" },
-        },
-        "shimmer": {
-          "0%": { backgroundPosition: "-200% 0" },
-          "100%": { backgroundPosition: "200% 0" },
-        },
+      fontFamily: {
+        display: ['"Bricolage Grotesque"', 'Inter', 'system-ui', 'sans-serif'],
+        sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
+      },
+      boxShadow: {
+        soft: '0 1px 2px rgb(8 34 29 / 0.04), 0 8px 24px rgb(8 34 29 / 0.06)',
+        lift: '0 2px 4px rgb(8 34 29 / 0.06), 0 20px 48px rgb(8 34 29 / 0.14)',
       },
       animation: {
-        "fade-up": "fade-up 0.7s ease-out forwards",
-        "fade-in": "fade-in 0.8s ease-out forwards",
-        "slide-left": "slide-left 0.6s ease-out forwards",
-        "scale-in": "scale-in 0.5s ease-out forwards",
+        'fade-up': 'fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both',
+        'fade-in': 'fadeIn 0.4s ease-out both',
+      },
+      keyframes: {
+        fadeUp: {
+          '0%': { opacity: '0', transform: 'translateY(18px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
       },
     },
   },

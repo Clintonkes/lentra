@@ -1,90 +1,164 @@
 import { Link } from "react-router-dom";
-import {
-  Scissors, Sparkles, Droplets, Leaf, Trees, Shovel,
-  ArrowRight, Phone, CheckCircle2, ShieldCheck, Clock, Truck,
-  Star,
-} from "lucide-react";
-import { site, services, testimonials } from "@/config/site";
-import StarRating from "@/components/StarRating";
+import { ArrowRight, Award, BadgeCheck, CalendarCheck, Clock, Leaf, Phone, ShieldCheck, Sprout, Star, ThumbsUp } from "lucide-react";
+import Photo from "@/components/Photo";
+import ServiceCard from "@/components/ServiceCard";
+import TestimonialCard from "@/components/TestimonialCard";
+import SectionHeading from "@/components/SectionHeading";
+import CtaBand from "@/components/CtaBand";
+import { SIZES, pageImages } from "@/config/images";
+import { services, site, testimonials } from "@/config/site";
 
-const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-  Scissors, Sparkles, Leaf, Droplets, Trees, Shovel,
-};
+const stats = [
+  { value: "12+", label: "Years in San Antonio" },
+  { value: "500+", label: "Properties cared for" },
+  { value: "4.9", label: "Average review rating" },
+  { value: "24h", label: "Quote turnaround" },
+];
 
-const heroImage =
-  "https://images.pexels.com/photos/28180214/pexels-photo-28180214.jpeg?auto=compress&cs=tinysrgb&w=1200";
-const aboutImage =
-  "https://images.pexels.com/photos/4079768/pexels-photo-4079768.jpeg?auto=compress&cs=tinysrgb&w=1200";
-const ctaImage =
-  "https://images.pexels.com/photos/280222/pexels-photo-280222.jpeg?auto=compress&cs=tinysrgb&w=1600";
+const reasons = [
+  { icon: Clock, title: "Always on time", text: "We show up on the day we promise, every visit, and let you know when we are done." },
+  { icon: Award, title: "Professional quality", text: "Trained crews and commercial grade equipment for results you can see from the curb." },
+  { icon: ShieldCheck, title: "Licensed and insured", text: "Full liability coverage, so your property is protected while we work." },
+  { icon: ThumbsUp, title: "Satisfaction guaranteed", text: "Not happy with a visit? Tell us and we will come back and make it right." },
+  { icon: Sprout, title: "Earth friendly care", text: "Practices that keep your lawn healthy and stay safe for children and pets." },
+  { icon: CalendarCheck, title: "Free estimates", text: "Clear, written pricing tailored to your property with no hidden fees." },
+];
+
+const steps = [
+  { title: "Request a quote", text: "Fill out the short form or give us a call. It takes about two minutes." },
+  { title: "Get your plan", text: "We review your property and send a clear estimate within one business day." },
+  { title: "Enjoy your lawn", text: "Our crew arrives on schedule and leaves your yard looking its very best." },
+];
 
 export default function Home() {
   return (
-    <div>
-      {/* Hero — split-screen: dark panel left, image right */}
-      <section className="relative min-h-screen flex pt-20 overflow-hidden">
-        <div className="absolute inset-0 lg:flex">
-          <div className="hidden lg:block w-[55%] pine-gradient" />
-          <div className="hidden lg:block w-[45%] relative">
-            <img src={heroImage} alt="Lawn care professional mowing a suburban lawn" className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-pine-950/20" />
-          </div>
+    <>
+      {/* Hero */}
+      <section className="relative flex min-h-[100svh] items-end overflow-hidden bg-evergreen-950 pb-16 pt-32 md:items-center md:pb-24">
+        <div className="absolute inset-0">
+          <Photo
+            src={pageImages.home.hero}
+            sizes={SIZES.full}
+            alt="Freshly striped front lawn of a San Antonio home"
+            priority
+            className="h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-evergreen-950/95 via-evergreen-950/75 to-evergreen-950/10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-evergreen-950/80 via-transparent to-transparent" />
         </div>
 
-        {/* Mobile background */}
-        <div className="absolute inset-0 lg:hidden">
-          <img src={heroImage} alt="Lawn care" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-pine-950/85" />
-        </div>
-
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center py-20 lg:py-0">
+        <div className="container-max relative">
           <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 bg-gold-500/15 border border-gold-400/30 rounded-full px-4 py-1.5 mb-6">
-              <span className="w-2 h-2 rounded-full bg-gold-400 animate-pulse" />
-              <span className="text-gold-300 text-sm font-medium">
-                Aurora&apos;s Trusted Lawn Care Professionals
-              </span>
-            </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-white mb-6 leading-tight">
-              A Lush, Healthy Lawn
-              <br />
-              <span className="gold-text">Without the Work</span>
+            <span className="inline-flex animate-fade-up items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-md">
+              <Leaf className="h-4 w-4 text-clay-400" /> San Antonio&apos;s trusted lawn care team
+            </span>
+            <h1 className="mt-7 animate-fade-up text-5xl font-bold leading-[1.02] text-white text-balance [animation-delay:80ms] md:text-7xl">
+              A beautiful lawn, <span className="text-clay-400">handled.</span>
             </h1>
-            <p className="text-lg text-pine-100 mb-8 leading-relaxed max-w-xl">
-              Petraslynn LLC delivers professional lawn care and landscape
-              management across Aurora and the Denver metro area. Colorado
-              expertise, reliable scheduling, and results you can see.
+            <p className="mt-6 max-w-xl animate-fade-up text-lg leading-relaxed text-evergreen-50/85 [animation-delay:160ms] md:text-xl">
+              Mowing, trimming, cleanups and full landscape design for homes and businesses across {site.address.city}. Reliable crews, fair prices and a yard you will be proud of.
             </p>
-            <div className="flex flex-col sm:flex-row items-start gap-4">
-              <Link
-                to="/quote"
-                className="gold-gradient hover:opacity-90 text-white font-semibold px-8 py-4 rounded-lg text-base transition-all duration-200 shadow-xl shadow-gold-500/20 flex items-center gap-2"
-              >
-                Get a Free Quote
-                <ArrowRight className="w-5 h-5" />
+            <div className="mt-9 flex animate-fade-up flex-wrap gap-4 [animation-delay:240ms]">
+              <Link to="/quote" className="btn-primary">
+                Get a Free Quote <ArrowRight className="h-5 w-5" />
               </Link>
-              <a
-                href={`tel:${site.phoneRaw}`}
-                className="border border-pine-600 hover:border-gold-400 text-white font-semibold px-8 py-4 rounded-lg text-base transition-all duration-200 flex items-center gap-2"
-              >
-                <Phone className="w-5 h-5" />
-                {site.phone}
+              <a href={`tel:${site.phoneRaw}`} className="btn-ghost">
+                <Phone className="h-5 w-5" /> {site.phone}
               </a>
             </div>
+            <div className="mt-10 flex animate-fade-up items-center gap-4 [animation-delay:320ms]">
+              <div className="flex -space-x-3">
+                {testimonials.map((t) => (
+                  <span key={t.name} className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-evergreen-950 bg-evergreen-700 font-display text-sm font-bold text-white">
+                    {t.name.charAt(0)}
+                  </span>
+                ))}
+              </div>
+              <div>
+                <div className="flex gap-0.5">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} className="h-4 w-4 fill-clay-400 text-clay-400" />
+                  ))}
+                </div>
+                <p className="mt-0.5 text-sm text-evergreen-50/80">Trusted by 500+ local homeowners</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-            {/* Inline trust indicators */}
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mt-10">
-              {[
-                { icon: ShieldCheck, text: "Licensed & Insured" },
-                { icon: Clock, text: "On Time, Every Time" },
-                { icon: Truck, text: "Free Estimates" },
-              ].map((item) => (
-                <div
-                  key={item.text}
-                  className="flex items-center gap-2 text-sm text-pine-200"
-                >
-                  <item.icon className="w-5 h-5 text-gold-400" />
-                  {item.text}
+      {/* Stats */}
+      <section className="relative z-10 -mt-px bg-evergreen-950">
+        <div className="container-max">
+          <dl className="grid grid-cols-2 border-t border-white/10 md:grid-cols-4">
+            {stats.map((s, i) => (
+              <div key={s.label} className={`px-2 py-8 text-center md:py-10 ${i % 2 === 1 ? "border-l border-white/10" : ""} ${i === 2 ? "md:border-l" : ""} ${i > 1 ? "border-t border-white/10 md:border-t-0" : ""}`}>
+                <dt className="sr-only">{s.label}</dt>
+                <dd className="font-display text-4xl font-bold text-white md:text-5xl">{s.value}</dd>
+                <dd className="mt-1 text-sm text-evergreen-100/70">{s.label}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+
+      {/* Services */}
+      <section className="section">
+        <div className="container-max">
+          <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+            <SectionHeading
+              eyebrow="What we do"
+              title="Complete care for every corner of your yard"
+              text="From the weekly mow to a full redesign, one dependable team handles it all."
+            />
+            <Link to="/services" className="btn-outline shrink-0">
+              All services <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+          <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {services.map((s) => (
+              <ServiceCard key={s.slug} service={s} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Why us */}
+      <section className="section bg-white">
+        <div className="container-max grid items-center gap-16 lg:grid-cols-2">
+          <div className="relative">
+            <div className="overflow-hidden rounded-[2rem] bg-evergreen-100 shadow-lift">
+              <Photo
+                src={pageImages.home.crew}
+                sizes={SIZES.half}
+                alt="Lentra crew member trimming evergreens"
+                className="aspect-[4/5] w-full object-cover"
+              />
+            </div>
+            <div className="absolute -bottom-6 left-6 right-6 flex items-center gap-4 rounded-2xl bg-white p-5 shadow-lift sm:left-auto sm:right-[-1.5rem] sm:w-72">
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-clay-600 text-white">
+                <BadgeCheck className="h-6 w-6" />
+              </span>
+              <p className="text-sm leading-snug">
+                <span className="block font-display text-base font-semibold text-evergreen-950">Licensed &amp; insured</span>
+                Serving San Antonio since 2012
+              </p>
+            </div>
+          </div>
+          <div>
+            <SectionHeading
+              eyebrow="Why Lentra"
+              title="The difference you can see from the curb"
+              text="We built our name on showing up, doing it right and treating every yard like our own."
+            />
+            <div className="mt-10 grid gap-x-8 gap-y-8 sm:grid-cols-2">
+              {reasons.map((r) => (
+                <div key={r.title}>
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-evergreen-50 text-evergreen-700">
+                    <r.icon className="h-5 w-5" />
+                  </span>
+                  <h3 className="mt-4 text-lg font-semibold">{r.title}</h3>
+                  <p className="mt-1.5 text-sm leading-relaxed text-sand-700">{r.text}</p>
                 </div>
               ))}
             </div>
@@ -92,255 +166,38 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats strip — navy bar with copper numbers */}
-      <section className="bg-pine-800 border-y border-pine-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
-            {[
-              { value: "500+", label: "Properties Served" },
-              { value: "8+", label: "Years in Business" },
-              { value: "4.9", label: "Average Rating" },
-              { value: "8", label: "Areas Covered" },
-            ].map((stat) => (
-              <div key={stat.label}>
-                <p className="text-3xl md:text-4xl font-semibold text-gold-400 mb-1">
-                  {stat.value}
-                </p>
-                <p className="text-pine-200 text-sm font-medium uppercase tracking-wide">
-                  {stat.label}
-                </p>
-              </div>
+      {/* Process */}
+      <section className="section lawn-stripes bg-evergreen-900">
+        <div className="container-max">
+          <div className="mx-auto max-w-2xl text-center">
+            <span className="eyebrow text-clay-300 before:bg-clay-300">How it works</span>
+            <h2 className="mt-4 text-3xl font-bold text-white text-balance md:text-5xl">Three simple steps to a better lawn</h2>
+          </div>
+          <ol className="mt-16 grid gap-6 md:grid-cols-3">
+            {steps.map((s, i) => (
+              <li key={s.title} className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
+                <span className="font-display text-5xl font-bold text-clay-400">0{i + 1}</span>
+                <h3 className="mt-6 text-xl font-semibold text-white">{s.title}</h3>
+                <p className="mt-2 leading-relaxed text-evergreen-100/75">{s.text}</p>
+              </li>
             ))}
-          </div>
+          </ol>
         </div>
       </section>
 
-      {/* Services — icon-first cards, no images, copper accent border-top */}
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <span className="text-gold-600 font-bold text-sm uppercase tracking-widest">
-              What We Do
-            </span>
-            <h2 className="text-3xl md:text-4xl font-semibold text-pine-900 mt-2 mb-4">
-              Complete Lawn & Landscape Care
-            </h2>
-            <p className="text-pine-600 max-w-2xl mx-auto">
-              From weekly mowing to complete landscape transformations, we handle
-              every aspect of keeping your property looking its best in
-              Colorado&apos;s unique climate.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {services.map((service) => {
-              const Icon = iconMap[service.icon] || Leaf;
-              return (
-                <Link
-                  key={service.slug}
-                  to="/services"
-                  className="group bg-white rounded-xl border border-pine-100 hover:border-gold-300 hover:shadow-xl card-hover overflow-hidden"
-                >
-                  <div className="h-1.5 gold-gradient opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <div className="p-7">
-                    <div className="w-14 h-14 rounded-xl bg-pine-50 group-hover:bg-pine-900 flex items-center justify-center mb-5 transition-all duration-300">
-                      <Icon className="w-7 h-7 text-pine-700 group-hover:text-gold-400 transition-colors duration-300" />
-                    </div>
-                    <h3 className="font-bold text-lg text-pine-900 mb-2 group-hover:text-gold-600 transition-colors">
-                      {service.title}
-                    </h3>
-                    <p className="text-pine-500 text-sm leading-relaxed mb-4">
-                      {service.short}
-                    </p>
-                    <span className="inline-flex items-center gap-1 text-gold-600 font-semibold text-sm group-hover:gap-2 transition-all">
-                      Learn More <ArrowRight className="w-4 h-4" />
-                    </span>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* About preview — image left, text right with checklist */}
-      <section className="py-24 bg-pine-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="relative order-2 lg:order-1">
-              <div className="rounded-2xl overflow-hidden shadow-2xl">
-                <img
-                  src={aboutImage}
-                  alt="Petraslynn lawn care professional at work"
-                  className="w-full h-[440px] object-cover"
-                />
-              </div>
-              <div className="absolute -bottom-6 -right-6 bg-white rounded-2xl shadow-xl p-5 border border-pine-100 hidden md:block">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl gold-gradient flex items-center justify-center">
-                    <Star className="w-6 h-6 text-white fill-white" />
-                  </div>
-                  <div>
-                    <p className="text-2xl font-semibold text-pine-900">4.9</p>
-                    <p className="text-xs text-pine-500 font-medium">
-                      200+ Reviews
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="order-1 lg:order-2">
-              <span className="text-gold-600 font-bold text-sm uppercase tracking-widest">
-                About Petraslynn
-              </span>
-              <h2 className="text-3xl md:text-4xl font-semibold text-pine-900 mt-2 mb-5">
-                Colorado&apos;s Lawn Care Specialists
-              </h2>
-              <p className="text-pine-600 leading-relaxed mb-6">
-                Petraslynn LLC is a locally owned and operated lawn care company
-                serving Aurora and the greater Denver metro area. We understand
-                Colorado&apos;s high altitude climate, clay soils, and water
-                constraints, and we know how to keep your lawn thriving through
-                it all.
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
-                {[
-                  "Locally owned in Aurora",
-                  "Same crew every visit",
-                  "Colorado expertise",
-                  "Free estimates, no obligation",
-                ].map((item) => (
-                  <div key={item} className="flex items-start gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-gold-500 flex-shrink-0 mt-0.5" />
-                    <span className="text-pine-700 text-sm">{item}</span>
-                  </div>
-                ))}
-              </div>
-              <Link
-                to="/about"
-                className="inline-flex items-center gap-2 bg-pine-900 hover:bg-pine-800 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-200"
-              >
-                Learn More About Us <ArrowRight className="w-5 h-5" />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Process — horizontal numbered cards on navy bg */}
-      <section className="py-24 pine-gradient">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <span className="text-gold-400 font-bold text-sm uppercase tracking-widest">
-              How It Works
-            </span>
-            <h2 className="text-3xl md:text-4xl font-semibold text-white mt-2 mb-4">
-              Four Steps to a Better Lawn
-            </h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { num: "01", title: "Reach Out", text: "Call us or fill out the quote form. Tell us about your property and goals." },
-              { num: "02", title: "Free Estimate", text: "We assess your yard and provide a clear, upfront price with no obligation." },
-              { num: "03", title: "Schedule Service", text: "Pick a plan and schedule that works for you. We handle the rest." },
-              { num: "04", title: "Enjoy Your Yard", text: "Our crew takes care of everything. You relax and enjoy the results." },
-            ].map((item) => (
-              <div
-                key={item.num}
-                className="bg-pine-800/60 rounded-2xl p-6 border border-pine-700 hover:border-gold-500/50 transition-colors duration-300"
-              >
-                <p className="text-5xl font-semibold gold-text mb-4">
-                  {item.num}
-                </p>
-                <h3 className="font-bold text-white text-lg mb-2">
-                  {item.title}
-                </h3>
-                <p className="text-pine-300 text-sm leading-relaxed">
-                  {item.text}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials — featured large + grid */}
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <span className="text-gold-600 font-bold text-sm uppercase tracking-widest">
-              Testimonials
-            </span>
-            <h2 className="text-3xl md:text-4xl font-semibold text-pine-900 mt-2 mb-4">
-              What Our Clients Say
-            </h2>
-            <div className="flex items-center justify-center gap-2 mt-3">
-              <StarRating rating={5} size="md" />
-              <span className="text-pine-500 font-medium text-sm">
-                4.9 average from 200+ reviews
-              </span>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Testimonials */}
+      <section className="section">
+        <div className="container-max">
+          <SectionHeading center eyebrow="Reviews" title="What our neighbors say" />
+          <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {testimonials.map((t) => (
-              <div
-                key={t.name}
-                className="bg-pine-50 rounded-xl p-6 border border-pine-100 hover:shadow-lg transition-shadow duration-300"
-              >
-                <StarRating rating={t.rating} size="md" />
-                <p className="text-pine-700 mt-4 mb-5 leading-relaxed text-sm">
-                  &ldquo;{t.text}&rdquo;
-                </p>
-                <div className="flex items-center gap-3 pt-4 border-t border-pine-100">
-                  <div className="w-11 h-11 rounded-full gold-gradient flex items-center justify-center font-bold text-white">
-                    {t.name.charAt(0)}
-                  </div>
-                  <div>
-                    <p className="font-semibold text-pine-900 text-sm">
-                      {t.name}
-                    </p>
-                    <p className="text-pine-400 text-xs">{t.location}</p>
-                  </div>
-                </div>
-              </div>
+              <TestimonialCard key={t.name} {...t} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA — full-width image with navy overlay */}
-      <section className="relative py-24 overflow-hidden">
-        <div className="absolute inset-0">
-          <img
-            src={ctaImage}
-            alt="Beautifully maintained property"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-pine-950/85" />
-        </div>
-        <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-semibold text-white mb-4">
-            Ready for a Lawn You Will Love?
-          </h2>
-          <p className="text-pine-100 mb-8 max-w-2xl mx-auto leading-relaxed">
-            Request your free estimate today, with no obligation. Our team will create a
-            customized care plan that fits your needs and budget.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              to="/quote"
-              className="gold-gradient hover:opacity-90 text-white font-semibold px-8 py-4 rounded-lg text-lg transition-all duration-200 shadow-xl shadow-gold-500/20 flex items-center gap-2"
-            >
-              Request Your Free Quote <ArrowRight className="w-5 h-5" />
-            </Link>
-            <a
-              href={`tel:${site.phoneRaw}`}
-              className="border border-pine-500 hover:border-gold-400 text-white font-semibold px-8 py-4 rounded-lg text-lg transition-all duration-200 flex items-center gap-2"
-            >
-              <Phone className="w-5 h-5" /> {site.phone}
-            </a>
-          </div>
-        </div>
-      </section>
-    </div>
+      <CtaBand />
+    </>
   );
 }

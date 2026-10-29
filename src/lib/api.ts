@@ -23,7 +23,7 @@ async function post<T>(path: string, body: unknown): Promise<T> {
     });
   } catch {
     // fetch only rejects when no response arrived at all (offline, DNS,
-    // CORS, or the server still waking up) — its own message is just
+    // CORS, or the server still waking up); its own message is just
     // "Failed to fetch", which means nothing to a customer.
     throw new Error(
       'We could not reach our server. Please check your connection and try again, or give us a call.'
@@ -82,4 +82,14 @@ export function createBooking(data: BookingRequest) {
 
 export function createContact(data: ContactRequest) {
   return post('/api/contacts', data);
+}
+
+/**
+ * The free Render backend sleeps when idle and takes up to a minute to wake.
+ * Pages with a form call this on open, so the server is awake by the time
+ * the visitor presses submit. Failures are ignored.
+ */
+export function wakeBackend() {
+  if (!API_URL) return;
+  fetch(`${API_URL}/api/health`).catch(() => {});
 }

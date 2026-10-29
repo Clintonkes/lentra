@@ -3,21 +3,73 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
   body {
-    @apply bg-pine-50 text-pine-900 font-sans antialiased;
+    @apply bg-sand-50 font-sans text-sand-800 antialiased;
+    line-height: 1.65;
   }
-
-  h1, h2, h3 {
-    @apply font-display tracking-tight;
-    font-optical-sizing: auto;
+  h1, h2, h3, h4 {
+    @apply font-display text-evergreen-950;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
   }
-
-  h4, h5, h6 {
-    @apply tracking-tight;
-  }
-
   ::selection {
-    @apply bg-gold-200 text-pine-950;
+    @apply bg-clay-200 text-evergreen-950;
+  }
+  :focus-visible {
+    @apply outline-none ring-2 ring-clay-500 ring-offset-2 ring-offset-sand-50;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  .container-max {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+  .section {
+    @apply py-20 md:py-28;
+  }
+  .eyebrow {
+    @apply inline-flex items-center gap-2 font-display text-xs font-semibold uppercase tracking-[0.2em] text-clay-600;
+  }
+  .eyebrow::before {
+    content: '';
+    @apply h-px w-6 bg-clay-500;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 font-display text-[15px] font-semibold transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-60;
+  }
+  .btn-primary {
+    @apply btn bg-clay-600 text-white shadow-[0_8px_24px_-8px_rgb(194_78_34/0.6)] hover:-translate-y-0.5 hover:bg-clay-700;
+  }
+  .btn-dark {
+    @apply btn bg-evergreen-900 text-white hover:-translate-y-0.5 hover:bg-evergreen-800;
+  }
+  .btn-ghost {
+    @apply btn border border-white/30 text-white backdrop-blur-sm hover:border-white hover:bg-white/10;
+  }
+  .btn-outline {
+    @apply btn border border-evergreen-900/20 text-evergreen-900 hover:border-evergreen-900 hover:bg-evergreen-900 hover:text-white;
+  }
+  .card {
+    @apply rounded-3xl border border-sand-200/80 bg-white shadow-soft;
+  }
+  .label {
+    @apply mb-2 block text-sm font-semibold text-evergreen-950;
+  }
+  .input {
+    @apply w-full rounded-xl border border-sand-300 bg-white px-4 py-3 text-[15px] text-evergreen-950 placeholder:text-sand-400 transition focus:border-evergreen-600 focus:outline-none focus:ring-4 focus:ring-evergreen-600/15;
   }
 }
 
@@ -25,35 +77,15 @@
   .text-balance {
     text-wrap: balance;
   }
-
-  .gold-gradient {
-    background: linear-gradient(135deg, #b8862f 0%, #9a6b24 55%, #7d5520 100%);
+  .text-pretty {
+    text-wrap: pretty;
   }
-
-  .pine-gradient {
-    background: linear-gradient(160deg, #0b1811 0%, #15271d 55%, #1b3025 100%);
-  }
-
-  .gold-text {
-    background: linear-gradient(135deg, #ecd391, #d4a955 60%, #c08f3a);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .hero-radial {
-    background: radial-gradient(ellipse at top, rgba(21, 39, 29, 0.6) 0%, rgba(11, 24, 17, 0.9) 100%);
-  }
-
-  .card-hover {
-    @apply transition-all duration-300 hover:-translate-y-1;
-  }
-
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+  /* Subtle mowed lawn stripes, used behind dark sections. */
+  .lawn-stripes {
+    background-image: repeating-linear-gradient(
+      100deg,
+      rgb(255 255 255 / 0.025) 0 56px,
+      transparent 56px 112px
+    );
   }
 }

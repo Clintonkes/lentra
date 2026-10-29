@@ -1,12 +1,13 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
-import Layout from '@/components/Layout';
-import Home from '@/pages/Home';
-import About from '@/pages/About';
-import Services from '@/pages/Services';
-import Gallery from '@/pages/Gallery';
-import Quote from '@/pages/Quote';
-import Contact from '@/pages/Contact';
-import FAQ from '@/pages/FAQ';
+import { Route, Routes } from "react-router-dom";
+import Layout from "@/components/Layout";
+import Home from "@/pages/Home";
+import About from "@/pages/About";
+import Services from "@/pages/Services";
+import Gallery from "@/pages/Gallery";
+import Quote from "@/pages/Quote";
+import Contact from "@/pages/Contact";
+import FAQ from "@/pages/FAQ";
+import NotFound from "@/pages/NotFound";
 
 export default function App() {
   return (
@@ -19,7 +20,7 @@ export default function App() {
         <Route path="/quote" element={<Quote />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/faq" element={<FAQ />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );
