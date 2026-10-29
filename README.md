@@ -57,8 +57,8 @@ The free Render plan sleeps when idle, so the first form submission after a quie
    Render URL (e.g. `https://<service>.onrender.com`). Without it the site still deploys, but the forms ask visitors to call or email instead.
 3. Push to `main`, or Actions → "Deploy Frontend to GitHub Pages" → Run workflow.
 
-The site is then live at `https://<github-user>.github.io/<repo>/`. The build reads GitHub's Pages
-configuration, so the base path is handled automatically: `/<repo>/` on github.io, `/` on a custom domain.
+The site is built for the root of `https://lentrallc.org` (`--base=/` in the workflow); GitHub
+redirects the `github.io` URL to the custom domain.
 Direct links and refreshes on inner pages (e.g. `/quote`) work via `public/404.html`.
 
 The backend already allows `https://clintonkes.github.io`. If the repo lives under another GitHub
@@ -72,9 +72,7 @@ account, add that `https://<user>.github.io` to `CORS_ORIGINS` on Render.
    - `CNAME` for `www` to `clintonkes.github.io`
 2. Repo > Settings > Pages > **Custom domain**: enter `lentrallc.org`, save, then tick
    **Enforce HTTPS** once the certificate is issued (can take up to an hour after DNS resolves).
-3. Re-run the deploy workflow (Actions > "Deploy Frontend to GitHub Pages" > Run workflow) so the
-   build switches from `/<repo>/` to the `/` base path.
-4. Redeploy the backend on Render. `https://lentrallc.org` and `https://www.lentrallc.org` are
+3. Redeploy the backend on Render. `https://lentrallc.org` and `https://www.lentrallc.org` are
    already allowed in `backend/main.py`, so `CORS_ORIGINS` can stay empty.
 
 The canonical URL, social share image (`public/og-image.png`), `robots.txt` and `sitemap.xml` already
